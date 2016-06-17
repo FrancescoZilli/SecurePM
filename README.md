@@ -1,2 +1,2 @@
 # SecurePM
-Secure Push-Messaging
+Secure Push-Messaging client-server
