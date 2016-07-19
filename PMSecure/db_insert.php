@@ -44,9 +44,12 @@ include('functions.php');
 	    </div>
 
 		<?php
-			if($username != "" && $password != "") {
+			if($username != "" && $password != "") {    
+        $dbconn = db_connect();
 				insert_user($name, $surname, $bday, $address, $username, $password);
+         
         echo '<h1>'. check_user($username) . '</h1>';
+        mysql_close($dbconn);
 			}
 			else {
 				echo "something wrong...try again";

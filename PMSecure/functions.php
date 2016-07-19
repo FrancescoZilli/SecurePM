@@ -10,12 +10,9 @@ function db_connect() {
 
 //controllo presenza utente
 function check_user($username) {
-	$dbconn = db_connect();
 
 	$sql = "SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = '" . $username . "')";
 	$exists = mysql_query($sql);
-
-	mysql_close($dbconn);
 
 	return $exists;
 }
@@ -24,7 +21,6 @@ function check_user($username) {
 
 //inserimento utente
 function insert_user($name, $surname, $bday, $address, $username, $password) {
-	$dbconn = db_connect();
 
 	$hpassword = hash_password($password);
 	$sql = "INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday) VALUES ('". $name ."', '". $surname ."', '". $username ."', '". $hpassword ."', '". $address ."', '". $bday ."')";
@@ -37,15 +33,40 @@ function insert_user($name, $surname, $bday, $address, $username, $password) {
 			  </div>';
 		header( "refresh:3;url=index.php" );
 	}
-	
-	mysql_close($dbconn); 	                                                            
+		                                                            
+}
+
+
+// add friend to contact list
+function add_friend($user1, $user2){
+	$dbconn = db_connect();
+
+	if(check_user($user2) && $user1 != $user2){
+		$sql = "SELECT EXISTS(SELECT * FROM sc_friends WHERE ( u_username = '" . $user1 . "' AND u_friend = '". $user2 ."' ) OR ( u_username = '" . $user2 . "' AND u_friend = '". $user1 ."' ))";
+		$exists = mysql_query($sql);
+		$query_result = mysql_fetch_row($exists);
+
+		if($query_result[0] == 0){
+			$sql = "INSERT INTO sc_friends (u_username, u_friend) VALUES ('". $user1 ."', '". $user2 ."')";
+		}
+
+		if(!mysql_query($sql)){  //stampo un errore
+		 echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . mysql_error() .'</div>';
+		}
+		else{
+			echo '<div class="alert alert-success">
+					<strong>Hai aggiunto amico con successo</strong>
+				  </div>';
+		}
+		
+		mysql_close($dbconn); 
+	}	
 }
 
 
 // controllo se username e password corrispondono ad un utente
 function login_user($username, $password) {
-	$dbconn = db_connect();
-
+	
 	$hpassword = hash_password($password);
 	$sql = "SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = '" . $username . "' AND u_password = '" . $hpassword . "')";
 
@@ -56,8 +77,6 @@ function login_user($username, $password) {
 	if($r == 1) {
 		header( "refresh:1;url=chat.php" );
 	} 
-
-	mysql_close($dbconn); 
 
 	return $r;
 }
