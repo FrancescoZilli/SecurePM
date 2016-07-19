@@ -58,6 +58,8 @@ function login_user($username, $password) {
 	} 
 
 	mysql_close($dbconn); 
+
+	return $r;
 }
 
 

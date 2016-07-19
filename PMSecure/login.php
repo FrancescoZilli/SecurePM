@@ -11,7 +11,7 @@
 		$_SESSION['nlog']++;
 	}
 
-	login_user($username, $password);
+	$login_correct = login_user($username, $password);
 ?>
 
 <!DOCTYPE html>
@@ -57,8 +57,21 @@
             <input type="text" name="user" placeholder="Username" required="required" />
             <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" onblur="dio" /> -->
             <input type="password" name="passwd" placeholder="Password" required="required" />
+            <?php
+            	if( $_SESSION['nlog'] > 3 && $login_correct == 0) {
+            		echo '<img src="http://www.captcha.net/images/recaptcha-example.gif" />';
+            	}
+            ?>
             <button type="submit" class="btn btn-primary btn-block btn-large">Let me in!</button>
         </form>
+        <?php
+        	if( $login_correct == 0) {
+        		echo '<h4>Invalid login. Attempt #' . $_SESSION['nlog'] . '</h4>';
+        	} else {
+        		echo '<h4>Hold on! Redirecting to chat...</h4>';
+        		$_SESSION['nlog'] = 0; //ripristino contatore
+        	}
+        ?>
         <h4>Register <a href="./registration.html">here</a>!</h4>
       </div>
     </div>
