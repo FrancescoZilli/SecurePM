@@ -23,7 +23,6 @@
   <body>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
   <script language="javascript">
 
     // We'll run the AJAX query when the page loads.
@@ -37,7 +36,7 @@
         cache: false,
         success: function(json) {
           console.log("gotit");
-          var list = document.getElementById('friendlist');
+          var list = document.getElementById('friendlist');     // VERIFY ARRAY LENGTH TO SEE IF SOMEONE HAS NO FRIENDS
 
           for( var i=0; i<json.length; i++ ) {
             var item = document.createElement('li');
@@ -84,5 +83,6 @@
     
     <script src="./js/jquery.js"></script>
     <script src="./js/index.js"></script>
+    
   </body>
 </html>
