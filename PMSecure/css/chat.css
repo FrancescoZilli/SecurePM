@@ -1,0 +1,89 @@
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin:0;
+    padding:0;
+}
+
+#topbar{
+    height: 7%;
+    background-color: darkgray;
+}
+
+#sidebar {
+    width: 20%;
+    padding-top: 10px;
+    height: inherit;
+    float: left;
+    background-color: gray;
+}
+#primary {
+    margin-left: 20%;
+    height: inherit;
+}
+#log {
+    height: 73%;
+    background-color: silver;
+    overflow: auto;
+}
+#composer {
+    height: 20%;
+    background-color: darkgray;
+}
+
+#composer, #log
+{
+    padding: 20px;
+}
+
+#top_name{
+    left: 0;
+    padding: 10px;
+    position: relative;
+    width: 50%;
+    height:100%;
+    font-family: 'Open Sans', sans-serif;
+}
+
+textarea
+{
+    width: 90%;
+    height: 100%;
+    left:0;
+}
+
+.long-content
+{
+    height: 3000px;
+    display: block;
+}
+
+.friends{
+    width: 100%; 
+  margin-bottom: 10px; 
+  background: rgba(0,0,0,0.3);
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 13px;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,0,0,0.3);
+  box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+  -webkit-transition: box-shadow .5s ease;
+  -moz-transition: box-shadow .5s ease;
+  -o-transition: box-shadow .5s ease;
+  -ms-transition: box-shadow .5s ease;
+  transition: box-shadow .5s ease;
+}
+
+button{
+    right: 0;
+    height: 100%;
+    width: 5%;
+}

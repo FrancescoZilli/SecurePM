@@ -7,6 +7,9 @@
 		$password = $_POST['passwd'];	
 	}
 
+  $_SESSION['username'] = $username;
+
+
 	if( isset($_SESSION['nlog']) ) {
 		$_SESSION['nlog']++;
 	}

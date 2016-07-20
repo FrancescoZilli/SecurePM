@@ -75,7 +75,7 @@ function login_user($username, $password) {
 
 	$r = ($result[0] == 1)? 1 : 0;
 	if($r == 1) {
-		header( "refresh:1;url=chat.php" );
+		header( "refresh:0;url=chat.php" );
 	} 
 
 	return $r;
@@ -114,6 +114,8 @@ function rimuovi_utente($user_id){
 
 }
 */
+
+
 
 
 ?>
