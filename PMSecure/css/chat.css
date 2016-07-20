@@ -41,13 +41,26 @@ html, body {
     padding: 20px;
 }
 
+#user
+{
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+    color: #fff; 
+    text-shadow: 0 0 10px rgba(0,0,0,0.5); 
+    letter-spacing:1px; 
+    text-align:center;
+}
+
 #top_name{
-    left: 0;
     padding: 10px;
     position: relative;
     width: 50%;
     height:100%;
     font-family: 'Open Sans', sans-serif;
+    color: #fff; 
+    text-shadow: 0 0 10px rgba(0,0,0,0.5); 
+    letter-spacing:1px; 
+    text-align:center;
 }
 
 textarea
@@ -65,21 +78,21 @@ textarea
 
 .friends{
     width: 100%; 
-  margin-bottom: 10px; 
-  background: rgba(0,0,0,0.3);
-  border: none;
-  outline: none;
-  padding: 10px;
-  font-size: 13px;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
-  border: 1px solid rgba(0,0,0,0.3);
-  box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
-  -webkit-transition: box-shadow .5s ease;
-  -moz-transition: box-shadow .5s ease;
-  -o-transition: box-shadow .5s ease;
-  -ms-transition: box-shadow .5s ease;
-  transition: box-shadow .5s ease;
+    margin-bottom: 10px; 
+    background: rgba(0,0,0,0.3);
+    border: none;
+    outline: none;
+    padding: 10px;
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.3);
+    box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+    -webkit-transition: box-shadow .5s ease;
+    -moz-transition: box-shadow .5s ease;
+    -o-transition: box-shadow .5s ease;
+    -ms-transition: box-shadow .5s ease;
+    transition: box-shadow .5s ease;
 }
 
 button{

@@ -45,24 +45,24 @@
           }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-              alert("Error, status = " + textStatus + ", " +
-                    "error thrown: " + errorThrown
-              );
+              alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
         }
       });
     }
   </script>
 
   <div id="sidebar">
+
+    <div id="user"> <?php echo $user ?> </div>
+
     <div>Online</div>
-      <ul class="friends" id="friendlist">
-        
-      </ul>
+    <ul class="friends" id="friendlist"></ul>
+
   </div>
 
   <div id="primary">
     <div id= "topbar">
-      <div id="top_name">ASDRUBALE</div>
+      <div id="top_name"> ASDRUBALE </div>
     </div>
 
     <div id="log">
@@ -83,6 +83,6 @@
     
     <script src="./js/jquery.js"></script>
     <script src="./js/index.js"></script>
-    
+
   </body>
 </html>
