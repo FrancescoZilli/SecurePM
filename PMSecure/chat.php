@@ -33,46 +33,25 @@
       $.ajax({
         type:    "POST",
         url:     "./db_friends.php",
-        data:    {"name":"ciao"},
-        success: function(data) {
-              alert('call back');
+        dataType: "json",
+        cache: false,
+        success: function(json) {
+          console.log("gotit");
+          var list = document.getElementById('friendlist');
+
+          for( var i=0; i<json.length; i++ ) {
+            var item = document.createElement('li');
+            item.appendChild( document.createTextNode(json[i]) );
+            list.appendChild(item);
+          }
         },
-        // vvv---- This is the new bit
-        error:   function(jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
               alert("Error, status = " + textStatus + ", " +
                     "error thrown: " + errorThrown
               );
         }
       });
     }
-
-/*
-    function askForFriends() {
-      console.log("dio");
-        $.post(
-        "./db_friends.php", // The server URL 
-        {name: 'culo'},
-        createFriendsList // The function to call on completion.
-        );
-    }
-*/
-
-    function createFriendsList(json) {
-      console.log("gotit");
-      var list = document.getElementById('friendlist');
-
-      for( var i=1; i<json.length; i++ ) {
-        var item = document.createElement('li');
-        item.appendChild( document.createTextNode(json[i]) );
-        list.appendChild(item);
-      }
-    }
-
-    function show(json) {
-      console.log(json);
-        alert(json);
-    }
-
   </script>
 
   <div id="sidebar">

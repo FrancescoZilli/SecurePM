@@ -1,4 +1,6 @@
 <?php
+	include('functions.php');
+
 	session_start();
 
 	// Prevent caching.
@@ -8,14 +10,11 @@
 	// The JSON standard MIME header.
 	header('Content-type: application/json');
 
-	$id = $_POST['name'];
-
 	if(isset($_SESSION['username'])){
 		$user = $_SESSION['username'];
-		echo $user;
 	}
 	
-	/*$dbconn = db_connect();
+	$dbconn = db_connect();
 	$sql = "SELECT * FROM sc_friends WHERE u_username = '". $user . "' OR u_friend = '". $user."' ";
 	$query = mysql_query($sql);
 	$result = array();
@@ -28,9 +27,6 @@
 		}
 	}
 	
-	echo json_encode($result);*/
-	$data = array();
-	array_push($data, $id);
-	echo json_encode($data);
+	echo json_encode($result);
 	
 ?>
