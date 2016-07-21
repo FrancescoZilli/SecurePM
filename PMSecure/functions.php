@@ -22,18 +22,26 @@ function check_user($username) {
 //inserimento utente
 function insert_user($name, $surname, $bday, $address, $username, $password) {
 
-	$hpassword = hash_password($password);
-	$sql = "INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday) VALUES ('". $name ."', '". $surname ."', '". $username ."', '". $hpassword ."', '". $address ."', '". $bday ."')";
+	$salt = generate_salt();
+	$hpassword = hash_password($password . $salt);
+	$sql = "INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday, u_salt) VALUES ('". $name ."', '". $surname ."', '". $username ."', '". $hpassword ."', '". $address ."', '". $bday ."', '". $salt ."')";
+
+	$result = "";
+
 	if(!mysql_query($sql)){  //stampo un errore
-		 echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . mysql_error() .'</div>';
+		if(mysql_errno() == 1062) {
+			$result = "username o email inserite sono già utilizzate e non più disponibili";
+		} else {
+		 	$result = "errore nell'inserimento dell'utente; contattare admin";
+		}
+		header( "refresh:4;url=registration.html" );
 	}
 	else{
-		echo '<div class="alert alert-success">
-				<strong>Utente inserito con successo</strong>
-			  </div>';
+		$result = "Utente inserito con successo. Verrai reindirizzato all'area di login a momenti!";
 		header( "refresh:3;url=index.php" );
 	}
-		                                                            
+
+	return $result;		                                                            
 }
 
 
@@ -67,7 +75,8 @@ function add_friend($user1, $user2){
 // controllo se username e password corrispondono ad un utente
 function login_user($username, $password) {
 	
-	$hpassword = hash_password($password);
+	$salt = retrieve_salt($username);
+	$hpassword = hash_password($password . $salt);
 	$sql = "SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = '" . $username . "' AND u_password = '" . $hpassword . "')";
 
 	$query = mysql_query($sql);
@@ -85,6 +94,30 @@ function login_user($username, $password) {
 // hashing della password
 function hash_password($password) {
 	return sha1($password);
+}
+
+
+// creating unique salt for each user
+function generate_salt() {
+    $salt = "";
+    $alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // LENGTH IS HARDSCRIPTED DUE TO " Uninitialized string offset " ERROR
+
+    for( $i=0; $i < 10; $i++ ) {
+    	$rnd = mt_rand(0, 61);
+        $salt .= $alphabet[$rnd];
+    }
+
+    return $salt;
+}
+
+
+// retrieve salt from database, given the username
+function retrieve_salt($user) {
+	$sql = "SELECT u_salt FROM sc_users WHERE u_username = '". $user . "' ";
+	$query = mysql_query($sql);
+
+	$salt = mysql_fetch_array($query);
+	return $salt[0];
 }
 
 

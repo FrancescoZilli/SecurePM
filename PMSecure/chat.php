@@ -55,7 +55,7 @@
 
     <div id="user"> <?php echo $user ?> </div>
 
-    <div>Online</div>
+    <div>Friends</div>
     <ul class="friends" id="friendlist"></ul>
 
   </div>
@@ -67,22 +67,16 @@
 
     <div id="log">
 
-        <span class="long-content">
-          
-        </span>
+        <span class="long-content"></span>
 
     </div>
 
     <div id="composer">
-        <textarea>
-          
-        </textarea>
-
+        <textarea> </textarea>
         <button>Send</button>
     </div>
     
     <script src="./js/jquery.js"></script>
-    <script src="./js/index.js"></script>
 
   </body>
 </html>

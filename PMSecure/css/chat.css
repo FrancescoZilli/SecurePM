@@ -70,6 +70,12 @@ textarea
     left:0;
 }
 
+button{
+    right: 0;
+    width: 5%;
+    height: 100%;
+}
+
 .long-content
 {
     height: 3000px;
@@ -95,8 +101,3 @@ textarea
     transition: box-shadow .5s ease;
 }
 
-button{
-    right: 0;
-    height: 100%;
-    width: 5%;
-}
