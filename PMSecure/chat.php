@@ -40,7 +40,7 @@
           console.log("gotit");    // VERIFY ARRAY LENGTH TO SEE IF SOMEONE HAS NO FRIENDS
 
           for( var i=0; i<json.length; i++ ) {
-            var item = '<li onclick = "selectFriend('+ json[i]+ ')"> ' + json[i] + '</li>';
+            var item = '<li onclick = "selectFriend(' + "'" + json[i] + "'" + ')"> ' + json[i] + '</li>';
             console.log(item);
             document.getElementById('friendlist').innerHTML += item;
           }
