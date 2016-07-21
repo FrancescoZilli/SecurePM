@@ -16,6 +16,6 @@
 
 	$salt = mysql_fetch_array($query);
 	
-	echo json_encode($salt[0]);
+	echo date('d/m/Y');
 	
 ?>
