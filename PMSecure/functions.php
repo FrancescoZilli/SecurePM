@@ -26,22 +26,24 @@ function insert_user($name, $surname, $bday, $address, $username, $password) {
 	$hpassword = hash_password($password . $salt);
 	$sql = "INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday, u_salt) VALUES ('". $name ."', '". $surname ."', '". $username ."', '". $hpassword ."', '". $address ."', '". $bday ."', '". $salt ."')";
 
-	$result = "";
+	$data = array(0, "");		// POSSIBILE CONVERTIRLO AD UNA STRINGA
 
 	if(!mysql_query($sql)){  //stampo un errore
 		if(mysql_errno() == 1062) {
-			$result = "username o email inserite sono già utilizzate e non più disponibili";
+			$data[0] = 1;
+			$data[1] = "USERNAME e/o MAIL inserite sono già utilizzate e non più disponibili";			
 		} else {
-		 	$result = "errore nell'inserimento dell'utente; contattare admin";
+			$data[0] = 2;
+		 	$data[1]  = "ERRORE nell'inserimento dell'utente; contattare admin";		 	
 		}
 		header( "refresh:4;url=registration.html" );
 	}
 	else{
-		$result = "Utente inserito con successo. Verrai reindirizzato all'area di login a momenti!";
+		$data[1] = "Utente inserito con successo. Verrai reindirizzato all'area di login a momenti!";
 		header( "refresh:3;url=index.php" );
 	}
 
-	return $result;		                                                            
+	return $data;		                                                            
 }
 
 

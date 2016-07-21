@@ -29,6 +29,8 @@ include('functions.php');
 				echo "Completare tutti i campi prima di confermare il form";
 				header( "refresh:3;url=registration.html" );
 			}
+
+      echo '<h1>' . $ins_result[1] . '</h1>';
 		?>
     
     <script src="./js/jquery.js"></script>
