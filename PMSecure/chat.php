@@ -54,6 +54,8 @@
 
     function sendContent(dest){
       var message = document.getElementById("userText").value;
+      console.log(message);
+      document.getElementById("userText").value = "";
       $.ajax({
         url: './db_send.php',
         type: 'POST',
@@ -63,7 +65,7 @@
         success: function(text){
 
           var buffer = text.substring(1, text.length-1).split("|||");
-          document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span>';
+          document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
         },
         error: function(jqXHR, textStatus, errorThrown) {
               alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -74,6 +76,7 @@
     function selectFriend(user){
       destinatario = user;
       document.getElementById("composer").style.visibility = "visible";
+      document.getElementById("top_name").innerHTML = destinatario;
     }
 
 
@@ -91,7 +94,7 @@
 
   <div id="primary">
     <div id= "topbar">
-      <div id="top_name"> ASDRUBALE </div>
+      <div id="top_name"></div>
     </div>
 
     <div id="log">
@@ -100,7 +103,7 @@
 
     <div id="composer">
         <textarea id="userText"> </textarea>
-        <button>Send</button>
+        <button onclick="sendContent(destinatario)">Send</button>
     </div>
     
     <script src="./js/jquery.js"></script>
