@@ -28,7 +28,9 @@
     // We'll run the AJAX query when the page loads.
     window.onload = askForFriends;
     var destinatario = "";
+    var friendlist; //create an array of friends to avoid double-listing them
 
+    // LOAD YOUR FRIENDS LIST
     function askForFriends() {
       document.getElementById("composer").style.visibility = "hidden";
       $.ajax({
@@ -52,6 +54,8 @@
       });
     }
 
+
+    // SEND MESSAGE TO SERVER (will redirect to your friend)
     function sendContent(dest){
       var message = document.getElementById("userText").value;
       console.log(message);
@@ -60,11 +64,10 @@
         url: './db_send.php',
         type: 'POST',
         dataType: 'text',
-        data: {msg: message, to: destinatario},
+        data: {msg: message, to: destinatario}, //DEST O DESTINATARIO?! ASSOCIAZIONE DA ESEGUIRE
         cache: false,
         success: function(text){
-
-          var buffer = text.substring(1, text.length-1).split("|||");
+          var buffer = parseMessage(text);
           document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -73,13 +76,75 @@
       });
     }
 
+
+    // SELECT FRIEND YOU WANT TO CHAT WITH
     function selectFriend(user){
       destinatario = user;
       document.getElementById("composer").style.visibility = "visible";
       document.getElementById("top_name").innerHTML = destinatario;
+      document.getElementById("log").innerHTML = "";
+      //select here previous conversations with user
+      loadConversation();
     }
 
 
+    // ADD USER TO YOUR FRIEND LIST
+    function addFriend() {
+      var friendtoadd = document.getElementById("friend_to_add").value;
+
+      if(friendtoadd != "") {
+
+        $.ajax({
+          url: './db_addfriend.php',
+          type: 'POST',
+          dataType: 'text',
+          data: {friend: friendtoadd},
+          cache: false,
+          success: function(text){
+            alert(text);
+            askForFriends();    // Needs a FIX!!!! --> friendlist array
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+          }
+        });
+
+      }
+
+    }
+
+
+    // LOAD THE CONVERSATION YOU HAD WITH YOUR FRIEND
+    function loadConversation() {
+      $.ajax({
+          url: './db_retrievelogs.php',
+          type: 'POST',
+          dataType: 'text',
+          data: {friend: destinatario}, //must be set and should be
+          cache: false,
+          success: function(text){
+            console.log(text);
+            var buffer = parseMessage(text);
+            document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+          }
+        });
+    }
+
+
+    // SUBFUNCTION: parse exchanged messages with server
+    function parseMessage(text) {
+      var buf = text.substring(1, text.length-1).split("|||");
+      return buf;
+    }
+
+
+    // WILL BE DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEELEEEEEEEEEEEEEEEETED
+    function prova() {      
+      alert("value");
+    }
 
   </script>
 
@@ -87,8 +152,15 @@
 
     <div id="user"> <?php echo $user ?> </div>
 
-    <div>Friends</div>
+    <div>
+      <h4>Friends</h4>
+    </div>
     <ul class="friends" id="friendlist"></ul>
+
+    <div id="add_friend">
+      <input type="text"  value="" id="friend_to_add"/>
+      <input type="submit" value="add friend" onclick="addFriend()" /> 
+    </div>
 
   </div>
 

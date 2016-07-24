@@ -61,7 +61,7 @@ function add_friend($user1, $user2){
 		}
 
 		if(!mysql_query($sql)){  //stampo un errore
-		 echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . mysql_error() .'</div>';
+			echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . mysql_error() .'</div>';
 		}
 		else{
 			echo '<div class="alert alert-success">
