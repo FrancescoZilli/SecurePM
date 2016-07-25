@@ -13,12 +13,13 @@
 	$last_sent = "";
 
 
-	$dbconn = db_connect();
+	/*$dbconn = db_connect();
 	$sql = "SELECT u_lastmsg FROM sc_friends WHERE (u_username = '". $user . "' AND u_friend = '". $friend."' ) OR (u_username = '". $friend . "' AND u_friend = '". $user."' )";
 	$query = mysql_query($sql);
-	$result = mysql_fetch_row($query);
+	$result = mysql_fetch_row($query);*/
 
-	echo $result[0];
+	//echo $result[0];
+	echo "data: cane {$friend}\n";
 	flush();
 
 	/*if( $result[0] != $last_sent) {
