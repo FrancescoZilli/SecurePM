@@ -12,7 +12,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="./css/font-awesome.css" rel="stylesheet">
     <link href='./css/style.css' rel='stylesheet'>
 
     <title>Secure Push Messaging</title>

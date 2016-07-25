@@ -19,12 +19,12 @@
 
 	$date = date('d/m/Y H:m');
 
-	$composedMess = "'{".$sender."|||". $date . "|||" . $message . "}'";
+	$composedMess = "{".$sender."|||". $date . "|||" . $message . "}";
 
 
 	
 	$dbconn = db_connect();
-	$update = "UPDATE sc_friends SET u_chatlog = ".$composedMess." WHERE (u_username = '". $sender . "' AND u_friend = '". $dest ."') OR (u_username = '". $dest . "' AND u_friend = '". $sender ."')"  ;
+	$update = "UPDATE sc_friends SET u_chatlog = IFNULL (CONCAT( u_chatlog , '".$composedMess."[|||]' ), '".$composedMess."[|||]' ) WHERE (u_username = '". $sender . "' AND u_friend = '". $dest ."') OR (u_username = '". $dest . "' AND u_friend = '". $sender ."')"  ;
 
 	$query = mysql_query($update);
 	echo $composedMess;

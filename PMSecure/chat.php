@@ -55,17 +55,6 @@
       });
     }
 
-    function displayFriends() {      
-      document.getElementById('friendlist').innerHTML = "";
-      document.getElementById('friend_to_add').value = "";
-      friendlist.sort();
-      for( var i=0; i<friendlist.length; i++ ) {
-        var item = '<li onclick = "selectFriend(' + "'" + friendlist[i] + "'" + ')"> ' + friendlist[i] + '</li>';
-        document.getElementById('friendlist').innerHTML += item;
-      }
-
-    }
-
 
     // SEND MESSAGE TO SERVER (will redirect to your friend)
     function sendContent(dest){
@@ -95,8 +84,8 @@
       document.getElementById("composer").style.visibility = "visible";
       document.getElementById("top_name").innerHTML = destinatario;
       document.getElementById("log").innerHTML = "";
-      //select here previous conversations with user
-      loadConversation();
+      
+      loadConversation(); //select here previous conversations with user
     }
 
 
@@ -135,9 +124,11 @@
           data: {friend: destinatario}, //must be set and should be
           cache: false,
           success: function(text){
-            console.log(text);
-            var buffer = parseMessage(text);
-            document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+            var msg_lst = parseMessageList(text);
+            for(var i=0; i<msg_lst.length-1; i++) { //-1 since last one will be an empty string
+              var buffer = parseMessage(msg_lst[i]);
+              document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+            }            
           },
           error: function(jqXHR, textStatus, errorThrown) {
                 alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -146,10 +137,29 @@
     }
 
 
+    //---------------------SUBFUNCTIONS-----------------------------------------------------------------------------------------------------------------
     // SUBFUNCTION: parse exchanged messages with server
     function parseMessage(text) {
       var buf = text.substring(1, text.length-1).split("|||");
       return buf;
+    }
+
+    function parseMessageList(text) {
+      var lst = text.split("[|||]");
+      return lst;
+    }
+
+
+    //SUBFUNCTION: display array of friends in a list of <li>    
+    function displayFriends() {      
+      document.getElementById('friendlist').innerHTML = "";
+      document.getElementById('friend_to_add').value = "";
+      friendlist.sort();
+      for( var i=0; i<friendlist.length; i++ ) {
+        var item = '<li onclick = "selectFriend(' + "'" + friendlist[i] + "'" + ')"> ' + friendlist[i] + '</li>';
+        document.getElementById('friendlist').innerHTML += item;
+      }
+
     }
 
 
