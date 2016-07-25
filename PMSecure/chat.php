@@ -28,7 +28,7 @@
     // We'll run the AJAX query when the page loads.
     window.onload = askForFriends;
     var destinatario = "";
-    var friendlist; //create an array of friends to avoid double-listing them
+    var friendlist = []; //create an array of friends to avoid double-listing them
 
     // LOAD YOUR FRIENDS LIST
     function askForFriends() {
@@ -42,16 +42,28 @@
           console.log("gotit");    // VERIFY ARRAY LENGTH TO SEE IF SOMEONE HAS NO FRIENDS
 
           for( var i=0; i<json.length; i++ ) {
-            var item = '<li onclick = "selectFriend(' + "'" + json[i] + "'" + ')"> ' + json[i] + '</li>';
-            console.log(item);
-            document.getElementById('friendlist').innerHTML += item;
+            if( !friendlist.includes(json[i]) )
+              friendlist.push(json[i]);
           }
+
+          displayFriends();
           
         },
         error: function(jqXHR, textStatus, errorThrown) {
               alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
         }
       });
+    }
+
+    function displayFriends() {      
+      document.getElementById('friendlist').innerHTML = "";
+      document.getElementById('friend_to_add').value = "";
+      friendlist.sort();
+      for( var i=0; i<friendlist.length; i++ ) {
+        var item = '<li onclick = "selectFriend(' + "'" + friendlist[i] + "'" + ')"> ' + friendlist[i] + '</li>';
+        document.getElementById('friendlist').innerHTML += item;
+      }
+
     }
 
 
