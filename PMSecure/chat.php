@@ -59,7 +59,6 @@
     // SEND MESSAGE TO SERVER (will redirect to your friend)
     function sendContent(dest){
       var message = document.getElementById("userText").value;
-      console.log(message);
       document.getElementById("userText").value = "";
       $.ajax({
         url: './db_send.php',
@@ -86,6 +85,35 @@
       document.getElementById("log").innerHTML = "";
       
       loadConversation(); //select here previous conversations with user
+      openConnection();
+    }
+
+
+    // OPEN A CONNECTION TO CHECK IF NEW MESSAGES ARRIVE
+    function openConnection() {
+      $.ajax({
+        url: './db_friendconnection.php',
+        type: 'POST',
+        dataType: 'text',
+        data: {friend: destinatario}, //DEST O DESTINATARIO?! ASSOCIAZIONE DA ESEGUIRE
+        cache: false,
+        success: function(){
+          if(typeof(EventSource) !== "undefined") {
+              var source = new EventSource("db_friendconnection.php");
+              console.log("FUNZ");
+              source.onmessage = function(event) {
+                  console.log(event.data + "asdasd");
+                  var buffer = parseMessage(event.data);
+                  document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+              };
+          } else {
+              document.getElementById("log").innerHTML = "Sorry, your browser does not support server-sent events...";
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+              alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+        }
+      });
     }
 
 
