@@ -19,12 +19,13 @@
 	$dbconn = db_connect();
 	$sql = "SELECT u_chatlog FROM sc_friends WHERE (u_username = '". $user . "' AND u_friend = '". $friend."' ) OR (u_username = '". $friend . "' AND u_friend = '". $user."' )";
 	$query = mysql_query($sql);
-	$result = array();
+	/*$result = array();
 
 	while( $item = mysql_fetch_array($query) ) {
 		array_push($result, $item);
-	}
+	}*/
+	$result = mysql_fetch_row($query);
 	
-	echo ($result);
+	echo $result[0];
 	
 ?>
