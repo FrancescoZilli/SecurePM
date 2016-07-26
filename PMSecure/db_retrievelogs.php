@@ -27,5 +27,6 @@
 	$result = mysql_fetch_row($query);
 	
 	echo $result[0];
+	mysql_close($dbconn);
 	
 ?>

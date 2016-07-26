@@ -127,13 +127,20 @@ function retrieve_salt($user) {
 function parseMessage($string) {
 	$len = strlen($string) - 2;
 	$inner_msg = substr($string, 1, $len);
-	list ($nome, $ora, $msg) = split("[|]{3}", $inner_msg);
+	list ($nome, $tempo, $msg) = split("[|]{3}", $inner_msg);
 
 	$result = array();
 	array_push($result, $nome);
-	array_push($result, $ora);
+	array_push($result, $tempo);
 
 	return $result;
+}
+
+// split date in useful values
+function parseTime($date) {
+	list ($giorno, $ora) = split(" ", $date);
+
+	return $ora;
 }
 
 

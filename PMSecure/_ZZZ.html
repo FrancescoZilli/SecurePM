@@ -12,15 +12,10 @@
     <!-- Login form-->
     <div class="login">
       <script type="text/javascript">
-        if(typeof(EventSource) !== "undefined") {
-            var source = new EventSource("server.php");
-            source.onmessage = function(event) {
-            document.getElementById("result").innerHTML += event.data + "<br>";
-            };
-        } else {
-            document.getElementById("result").innerHTML = "Sorry, your browser does not support server-sent events...";
-        }
-
+        var str = "26/07/2016 15:07:17";
+        var tmp = str.split(" ");
+        var time = tmp[1].substring(0, 5);
+        alert(time);
       </script> 
     </div> 
 

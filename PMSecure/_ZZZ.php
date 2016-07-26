@@ -1,10 +1,18 @@
 <?php
-	include('functions.php');
+	//include('functions.php');
 
-	$str1 = "{marco|||12:33||||uezza}";
-	$buf = parseMessage($str1);
+	function parseTime($date) {
+		list ($giorno, $ora) = split(" ", $date);
+		list ($ora, $min, $sec) = split(":", $ora);
 
-	
-	echo "NOME: " . $buf[0];
+		$result = $ora . "DIO" . $min;
+
+		return $result;
+	}
+
+	$tempo = "26/07/2016 15:07:13";
+	$buf = parseTime($tempo);
+
+	echo $buf;
 	
 ?>

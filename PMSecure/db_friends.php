@@ -28,5 +28,6 @@
 	}
 	
 	echo json_encode($result);
+	mysql_close($dbconn);
 	
 ?>

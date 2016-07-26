@@ -69,7 +69,7 @@
         success: function(text){
           var buffer = parseMessage(text);
           var textarea = document.getElementById('log');            
-          textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+          textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
           textarea.scrollTop = textarea.scrollHeight; 
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -96,13 +96,13 @@
     function openConnection() {
       if(typeof(EventSource) !== "undefined") {
         var source = new EventSource("_server.php");
-        console.log("FUNZ");
         source.onmessage = function(event) {
             console.log(event.data);
-            document.cookie = "last_sent=" + event.data;
+            document.cookie = "last_sent=" + event.data;  //ultimo messaggio caricato
             var buffer = parseMessage(event.data);
+            document.cookie = "last_time=" + parseTime(buffer[1]);  //ora dell'ultimo messaggio caricato
             var textarea = document.getElementById('log');
-            textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+            textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
             textarea.scrollTop = textarea.scrollHeight;
         };
       } else {
@@ -150,7 +150,7 @@
             var msg_lst = parseMessageList(text);
             for(var i=0; i<msg_lst.length-1; i++) { //-1 since last one will be an empty string
               var buffer = parseMessage(msg_lst[i]);
-              document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+              document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
             }
             var textarea = document.getElementById('log');
             textarea.scrollTop = textarea.scrollHeight;            
@@ -172,6 +172,12 @@
     function parseMessageList(text) {
       var lst = text.split("[|||]");
       return lst;
+    }
+
+    function parseTime(date) {
+      var tmp = date.split(" ");
+      var time = tmp[1];
+      return time;
     }
 
 
