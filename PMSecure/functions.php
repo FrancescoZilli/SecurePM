@@ -123,6 +123,20 @@ function retrieve_salt($user) {
 }
 
 
+// split message in useful values
+function parseMessage($string) {
+	$len = strlen($string) - 2;
+	$inner_msg = substr($string, 1, $len);
+	list ($nome, $ora, $msg) = split("[|]{3}", $inner_msg);
+
+	$result = array();
+	array_push($result, $nome);
+	array_push($result, $ora);
+
+	return $result;
+}
+
+
 /*
 //stampo la lista degli utenti
 function lista_utenti(){

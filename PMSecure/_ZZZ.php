@@ -1,15 +1,10 @@
 <?php
 	include('functions.php');
 
-	// Prevent caching.
-	header('Cache-Control: no-cache, must-revalidate');
-	header('Expires: Mon, 01 Jan 1996 00:00:00 GMT');
+	$str1 = "{marco|||12:33||||uezza}";
+	$buf = parseMessage($str1);
 
-	// The JSON standard MIME header.
-	header('Content-type: application/json');
-
-	$result = strcasecmp('l', 'aaa');
 	
-	echo $result;
+	echo "NOME: " . $buf[0];
 	
 ?>

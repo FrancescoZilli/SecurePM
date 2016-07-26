@@ -57,18 +57,20 @@
 
 
     // SEND MESSAGE TO SERVER (will redirect to your friend)
-    function sendContent(dest){
+    function sendContent(){
       var message = document.getElementById("userText").value;
       document.getElementById("userText").value = "";
       $.ajax({
         url: './db_send.php',
         type: 'POST',
         dataType: 'text',
-        data: {msg: message, to: destinatario}, //DEST O DESTINATARIO?! ASSOCIAZIONE DA ESEGUIRE
+        data: {msg: message, to: destinatario}, 
         cache: false,
         success: function(text){
           var buffer = parseMessage(text);
-          document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+          var textarea = document.getElementById('log');            
+          textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+          textarea.scrollTop = textarea.scrollHeight; 
         },
         error: function(jqXHR, textStatus, errorThrown) {
               alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -92,31 +94,22 @@
 
     // OPEN A CONNECTION TO CHECK IF NEW MESSAGES ARRIVE
     function openConnection() {
-      $.ajax({
-        url: './_server.php',
-        type: 'POST',
-        dataType: 'text',
-        data: {friend: destinatario}, 
-        cache: false,
-        success: function(){
-          if(typeof(EventSource) !== "undefined") {
-            var source = new EventSource("_server.php");
-            console.log("FUNZ");
-            source.onmessage = function(event) {
-                console.log(event.data);
-                var buffer = parseMessage(event.data);
-                document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
-            };
-          } else {
-              document.getElementById("log").innerHTML = "Sorry, your browser does not support server-sent events...";
-          }
-          
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-              alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
-        }
-      });
+      if(typeof(EventSource) !== "undefined") {
+        var source = new EventSource("_server.php");
+        console.log("FUNZ");
+        source.onmessage = function(event) {
+            console.log(event.data);
+            document.cookie = "last_sent=" + event.data;
+            var buffer = parseMessage(event.data);
+            var textarea = document.getElementById('log');
+            textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
+            textarea.scrollTop = textarea.scrollHeight;
+        };
+      } else {
+          document.getElementById("log").innerHTML = "Sorry, your browser does not support server-sent events...";
+      }          
     }
+    
 
 
     // ADD USER TO YOUR FRIEND LIST
@@ -158,7 +151,9 @@
             for(var i=0; i<msg_lst.length-1; i++) { //-1 since last one will be an empty string
               var buffer = parseMessage(msg_lst[i]);
               document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " : " + buffer[2] +'</span><br>';
-            }            
+            }
+            var textarea = document.getElementById('log');
+            textarea.scrollTop = textarea.scrollHeight;            
           },
           error: function(jqXHR, textStatus, errorThrown) {
                 alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -227,7 +222,7 @@
 
     <div id="composer">
         <textarea id="userText"> </textarea>
-        <button onclick="sendContent(destinatario)">Send</button>
+        <button onclick="sendContent()">Send</button>
     </div>
     
     <script src="./js/jquery.js"></script>
