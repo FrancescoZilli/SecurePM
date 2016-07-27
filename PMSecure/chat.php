@@ -29,6 +29,7 @@
     window.onload = askForFriends;
     var destinatario = "";
     var friendlist = []; //create an array of friends to avoid double-listing them
+    
 
     // LOAD YOUR FRIENDS LIST
     function askForFriends() {
@@ -47,6 +48,13 @@
           }
 
           displayFriends();
+
+          // get last friend you have chatted with
+          var last_friend = getLastFriend();
+          if( last_friend != "" ) {
+            console.log(last_friend);
+            selectFriend(last_friend);
+          }
           
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -68,6 +76,7 @@
         cache: false,
         success: function(text){
           var buffer = parseMessage(text);
+          console.log("SENT: " + buffer);
           var textarea = document.getElementById('log');            
           textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
           textarea.scrollTop = textarea.scrollHeight; 
@@ -97,7 +106,7 @@
       if(typeof(EventSource) !== "undefined") {
         var source = new EventSource("_server.php");
         source.onmessage = function(event) {
-            console.log(event.data);
+            console.log("GOT: " + event.data);
             document.cookie = "last_sent=" + event.data;  //ultimo messaggio caricato
             var buffer = parseMessage(event.data);
             document.cookie = "last_time=" + parseTime(buffer[1]);  //ora dell'ultimo messaggio caricato
@@ -194,6 +203,19 @@
     }
 
 
+    // SUBFUNCTION: get, if existing, the friend cookie
+    function getLastFriend() {
+      var friend = "";  //returns null if cookie friend is not set
+      var list = document.cookie.split("; ");
+      for(var i=0; i<list.length; i++) {
+        if( list[i].includes("friend") )
+          friend = list[i].substring(7);
+      }
+
+      return friend;
+    }
+
+
     // WILL BE DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEELEEEEEEEEEEEEEEEETED
     function prova() {      
       alert("value");
@@ -214,6 +236,8 @@
       <input type="text"  value="" id="friend_to_add"/>
       <input type="submit" value="add friend" onclick="addFriend()" /> 
     </div>
+
+    <h4>Log out <a href="./logout.php">here</a>!</h4>
 
   </div>
 

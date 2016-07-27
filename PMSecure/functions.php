@@ -85,9 +85,6 @@ function login_user($username, $password) {
 	$result = mysql_fetch_row($query);
 
 	$r = ($result[0] == 1)? 1 : 0;
-	if($r == 1) {
-		header( "refresh:0;url=chat.php" );
-	} 
 
 	return $r;
 }

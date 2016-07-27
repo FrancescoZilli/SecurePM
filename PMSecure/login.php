@@ -23,7 +23,6 @@
 <html lang="en">
 
 <head>
-	<link href="./css/font-awesome.css" rel="stylesheet">
     <link href='./css/style.css' rel='stylesheet'>
 
 	<title>Log in</title>
@@ -51,6 +50,7 @@
     	} else {
     		echo '<h4>Hold on! Redirecting to chat...</h4>';
     		$_SESSION['nlog'] = 0; //ripristino contatore
+        header( "refresh:0;url=chat.php" ); 
     	}
     ?>
     <h4>Register <a href="./registration.html">here</a>!</h4>
