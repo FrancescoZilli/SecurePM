@@ -13,6 +13,6 @@
 	$tempo = "26/07/2016 15:07:13";
 	$buf = parseTime($tempo);
 
-	echo $buf;
+	echo strcasecmp("marco","luca");
 	
 ?>

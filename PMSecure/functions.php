@@ -1,18 +1,38 @@
 <?php
 
+
 //connessione al database
-function db_connect() {
-	$db = mysql_connect('127.0.0.1', 'root', 'calcio') or die ('Impossibile connettersi al database'); 
-	mysql_selectdb('spm_db') or die ('Errore selezione database'); //select database
-	return $db;
+function db_connect($dbname) {
+	$servername = "localhost";
+	$username = "root";
+	$password = "calcio";
+
+	// Create connection
+	$conn = new mysqli($servername, $username, $password, $dbname);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+
+	return $conn;
 }
 
 
 //controllo presenza utente
 function check_user($username) {
 
-	$sql = "SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = '" . $username . "')";
-	$exists = mysql_query($sql);
+	$conn = db_connect('spm_db');
+
+	$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = ?)");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$stmt->bind_result($res);
+
+	if( $stmt->fetch() ) {
+		$exists = $res;
+	}
+
+	$stmt->close();
+	$conn->close();
 
 	return $exists;
 }
@@ -24,69 +44,106 @@ function insert_user($name, $surname, $bday, $address, $username, $password) {
 
 	$salt = generate_salt();
 	$hpassword = hash_password($password . $salt);
-	$sql = "INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday, u_salt) VALUES ('". $name ."', '". $surname ."', '". $username ."', '". $hpassword ."', '". $address ."', '". $bday ."', '". $salt ."')";
+	$data = "";
+	$conn = db_connect('spm_db');
 
-	$data = array(0, "");		// POSSIBILE CONVERTIRLO AD UNA STRINGA
+	$stm = $conn->prepare("INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday, u_salt) VALUES (?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param('sssssss', $name, $surname, $username , $hpassword, $address, $bday, $salt );
+	$success = $stmt->execute();
 
-	if(!mysql_query($sql)){  //stampo un errore
-		if(mysql_errno() == 1062) {
-			$data[0] = 1;
-			$data[1] = "USERNAME e/o MAIL inserite sono già utilizzate e non più disponibili";			
+	if(!$success){  //stampo un errore
+		if($conn->errno() == 1062) {
+			$data = "USERNAME e/o MAIL inserite sono già utilizzate e non più disponibili";			
 		} else {
-			$data[0] = 2;
-		 	$data[1]  = "ERRORE nell'inserimento dell'utente; contattare admin";		 	
+		 	$data  = "ERRORE nell'inserimento dell'utente; contattare admin";		 	
 		}
 		header( "refresh:4;url=registration.html" );
 	}
 	else{
-		$data[1] = "Utente inserito con successo. Verrai reindirizzato all'area di login a momenti!";
+		$data = "Utente inserito con successo. Verrai reindirizzato all'area di login a momenti!";
 		header( "refresh:3;url=index.php" );
 	}
 
+	$stmt->close();
+	$conn->close();
 	return $data;		                                                            
 }
 
 
 // add friend to contact list
 function add_friend($user1, $user2){
-	$dbconn = db_connect();
+	$conn = db_connect('spm_db');
 
 	if(check_user($user2) && $user1 != $user2){
-		$sql = "SELECT EXISTS(SELECT * FROM sc_friends WHERE ( u_username = '" . $user1 . "' AND u_friend = '". $user2 ."' ) OR ( u_username = '" . $user2 . "' AND u_friend = '". $user1 ."' ))";
-		$exists = mysql_query($sql);
-		$query_result = mysql_fetch_row($exists);
+		if(strcasecmp($user1, $user2) < 0){
 
-		if($query_result[0] == 0){
-			$sql = "INSERT INTO sc_friends (u_username, u_friend) VALUES ('". $user1 ."', '". $user2 ."')";
+			$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_friends WHERE u_username = ? AND u_friend = ?)" );
+			$stmt->bind_param('ss', $user1, $user2);
+			$stmt->execute();
+			$stmt->bind_result($exists);
+			 
+			if( $stmt->fetch() ) {
+				$query_result = $exists;
+			}
+			$stmt->close();
+
+			if($query_result == 0){
+				$sql = $conn->prepare("INSERT INTO sc_friends (u_username, u_friend) VALUES (?, ?)");
+				$sql->bind_param('ss', $user1, $user2);
+				$success = $sql->execute();
+				$sql->close();
+			}
+			
+		} else{
+
+			$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_friends WHERE u_username = ? AND u_friend = ?)" );
+			$stmt->bind_param('ss', $user2, $user1);
+			$stmt->execute();
+			$stmt->bind_result($exists);
+			if( $stmt->fetch() ) {
+				$query_result = $exists;
+			}
+			$stmt->close();
+			
+			if($query_result == 0){
+
+				$sql = $conn->prepare("INSERT INTO sc_friends (u_username, u_friend) VALUES (?, ?)");
+				$sql->bind_param('ss', $user2, $user1);
+				$success = $sql->execute();
+				$sql->close();
+			}
+
 		}
 
-		if(!mysql_query($sql)){  //stampo un errore
-			echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . mysql_error() .'</div>';
+		if(!$success){  //stampo un errore
+			echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . $conn->error() .'</div>';
 		}
 		else{
 			echo '<div class="alert alert-success">
 					<strong>Hai aggiunto amico con successo</strong>
 				  </div>';
 		}
-		
-		mysql_close($dbconn); 
+		$conn->close();
 	}	
 }
 
 
 // controllo se username e password corrispondono ad un utente
 function login_user($username, $password) {
-	
+	$conn = db_connect('spm_db');
 	$salt = retrieve_salt($username);
 	$hpassword = hash_password($password . $salt);
-	$sql = "SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = '" . $username . "' AND u_password = '" . $hpassword . "')";
+	$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = ? AND u_password = ?)");
+	$stmt->bind_param('ss', $username, $hpassword);
+	$stmt->execute();
+	$stmt->bind_result($exists);
+	if( $stmt->fetch() )
+		$result = $exists;
 
-	$query = mysql_query($sql);
-	$result = mysql_fetch_row($query);
+	$stmt->close();
+	$conn->close();
 
-	$r = ($result[0] == 1)? 1 : 0;
-
-	return $r;
+	return $exists;
 }
 
 
@@ -112,11 +169,19 @@ function generate_salt() {
 
 // retrieve salt from database, given the username
 function retrieve_salt($user) {
-	$sql = "SELECT u_salt FROM sc_users WHERE u_username = '". $user . "' ";
-	$query = mysql_query($sql);
+	$conn = db_connect('spm_db');
+	$stmt = $conn->prepare("SELECT u_salt FROM sc_users WHERE u_username = ?");
+	$stmt->bind_param('s', $user);
+	$stmt->execute();
+	$stmt->bind_result($res);
 
-	$salt = mysql_fetch_array($query);
-	return $salt[0];
+	if( $stmt->fetch() )
+		$salt = $res;
+
+	$stmt->close();
+	$conn->close();
+
+	return $salt;
 }
 
 

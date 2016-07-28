@@ -19,32 +19,45 @@
 
 	$date = date('d/m/Y H:m:s');
 
-	$composedMess = "{".$sender."|||". $date . "|||" . $message . "}";
-	
-	$dbconn = db_connect();
+	$composedMess = "{".$sender."|||". $date . "|||" . $message . "}[|||]";
 
-	// check which column you should use to store your data
-	$sql = "SELECT EXISTS(SELECT * FROM sc_friends WHERE u_username = '" . $sender . "' AND u_friend = '" . $dest . "')";
-	$query = mysql_query($sql);
-	$exists = mysql_fetch_row($query);
-	if( $exists[0] == 1 ) {
+	//connect to server
+	$conn = db_connect('spm_db');
+	
+	$lex_order = strcasecmp($sender, $dest);
+	if( $lex_order < 0 ){
 		//l'utente è in u_username
-		$wheretowrite = "u_lastu";
+		$user1 = $sender;
+		$user2 = $dest;
 	} else {
 		//l'utente è in u_friends
-		$wheretowrite = "u_lastf";
+		$user1 = $dest;
+		$user2 = $sender;
 	}
 
-	$update = "UPDATE sc_friends SET u_chatlog = IFNULL (CONCAT( u_chatlog , '".$composedMess."[|||]' ), '".$composedMess."[|||]' ) WHERE (u_username = '". $sender . "' AND u_friend = '". $dest ."') OR (u_username = '". $dest . "' AND u_friend = '". $sender ."')" ;
-	$query = mysql_query($update);
+	$stmt = $conn->prepare("UPDATE sc_friends SET u_chatlog = IFNULL (CONCAT( u_chatlog , ? ), ? ) WHERE u_username = ? AND u_friend = ?");
+	$stmt->bind_param('ssss', $composedMess, $composedMess, $user1, $user2);
 
-	// second query
-	$insert_lstmsg = "UPDATE sc_friends SET " . $wheretowrite . " = '".$composedMess."' WHERE (u_username = '". $sender . "' AND u_friend = '". $dest ."') OR (u_username = '". $dest . "' AND u_friend = '". $sender ."')" ;
-	$query = mysql_query($insert_lstmsg);
+	
+	$stmt->execute();
+	$stmt->close();
+
+	$composedMess = "{".$sender."|||". $date . "|||" . $message . "}";
+
+	if( $lex_order < 0 ) {
+		$stmt2 = $conn->prepare("UPDATE sc_friends SET u_lastu = ? WHERE u_username = ? AND u_friend = ?");
+		$stmt2->bind_param('sss',  $composedMess, $user1, $user2);
+		$stmt2->execute();
+		$stmt2->close();
+	} else {
+		$stmt2 = $conn->prepare("UPDATE sc_friends SET u_lastf = ? WHERE u_username = ? AND u_friend = ?");
+		$stmt2->bind_param('sss',  $composedMess, $user1, $user2);
+		$stmt2->execute();
+		$stmt2->close();
+
+	}		
 
 	echo $composedMess;
 
-	mysql_close($dbconn);
-
-	//sleep(5);
+	$conn->close();
 ?>

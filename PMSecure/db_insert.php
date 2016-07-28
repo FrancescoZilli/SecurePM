@@ -21,16 +21,16 @@ include('functions.php');
 
 		<?php
 			if($username != "" && $password != "") {    
-        $dbconn = db_connect();
+        		$dbconn = db_connect();
 				$ins_result = insert_user($name, $surname, $bday, $address, $username, $password);
-        mysql_close($dbconn);
+        		mysql_close($dbconn);
 			}
 			else {
 				echo "Completare tutti i campi prima di confermare il form";
 				header( "refresh:3;url=registration.html" );
 			}
 
-      echo '<h1>' . $ins_result[1] . '</h1>';
+      		echo '<h1>' . $ins_result[1] . '</h1>';
 		?>
     
     <script src="./js/jquery.js"></script>

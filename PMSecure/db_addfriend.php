@@ -17,10 +17,9 @@
 	$friend = $_POST['friend'];
 	$db_response = "";
 	
-	$dbconn = db_connect();
-	$friend_exists = mysql_fetch_row( check_user($friend) );
+	$friend_exists = check_user($friend);
 
-	if($friend_exists[0] == 1) {
+	if($friend_exists == 1) {
 		//friend is registered on database
 		add_friend($user, $friend);
 		$db_response = "Adding friend...will be in your contact list now";

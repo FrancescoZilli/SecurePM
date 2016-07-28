@@ -13,21 +13,26 @@
 	if(isset($_SESSION['username'])){
 		$user = $_SESSION['username'];
 	}
-	
-	$dbconn = db_connect();
-	$sql = "SELECT * FROM sc_friends WHERE u_username = '". $user . "' OR u_friend = '". $user."' ";
-	$query = mysql_query($sql);
+
+	$conn = db_connect('spm_db');
+
+	$stmt = $conn->prepare("SELECT u_username, u_friend FROM sc_friends WHERE u_username = ? OR u_friend = ?");
+	$stmt->bind_param("ss", $user, $user);
+	$stmt->execute();
+	$stmt->bind_result($u1, $u2);
+
 	$result = array();
 
-	while( $item = mysql_fetch_array($query) ) {
-		if($item[0]!=$user){
-			array_push($result, $item[0]);
+	while ($stmt->fetch()) {
+		if( $u1 != $user ) {
+			array_push($result, $u1);
 		}else{
-			array_push($result, $item[1]);
+			array_push($result, $u2);
 		}
-	}
-	
+    }
+
 	echo json_encode($result);
-	mysql_close($dbconn);
 	
+	$stmt->close();
+	$conn->close();	
 ?>

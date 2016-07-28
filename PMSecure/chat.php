@@ -52,7 +52,6 @@
           // get last friend you have chatted with
           var last_friend = getLastFriend();
           if( last_friend != "" ) {
-            console.log(last_friend);
             selectFriend(last_friend);
           }
           
@@ -67,24 +66,28 @@
     // SEND MESSAGE TO SERVER (will redirect to your friend)
     function sendContent(){
       var message = document.getElementById("userText").value;
+      
+      if( message != "" ) {
+        $.ajax({
+          url: './db_send.php',
+          type: 'POST',
+          dataType: 'text',
+          data: {msg: message, to: destinatario}, 
+          cache: false,
+          success: function(text){
+            var buffer = parseMessage(text);
+            console.log("SENT: " + buffer);
+            var textarea = document.getElementById('log');            
+            textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+            textarea.scrollTop = textarea.scrollHeight; 
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+          }
+        });
+      }
+
       document.getElementById("userText").value = "";
-      $.ajax({
-        url: './db_send.php',
-        type: 'POST',
-        dataType: 'text',
-        data: {msg: message, to: destinatario}, 
-        cache: false,
-        success: function(text){
-          var buffer = parseMessage(text);
-          console.log("SENT: " + buffer);
-          var textarea = document.getElementById('log');            
-          textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
-          textarea.scrollTop = textarea.scrollHeight; 
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-              alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
-        }
-      });
     }
 
 
@@ -92,6 +95,7 @@
     function selectFriend(user){
       destinatario = user;
       document.getElementById("composer").style.visibility = "visible";
+      document.getElementById("userText").value = "";
       document.getElementById("top_name").innerHTML = destinatario;
       document.getElementById("log").innerHTML = "";
       
@@ -215,11 +219,6 @@
       return friend;
     }
 
-
-    // WILL BE DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEELEEEEEEEEEEEEEEEETED
-    function prova() {      
-      alert("value");
-    }
 
   </script>
 

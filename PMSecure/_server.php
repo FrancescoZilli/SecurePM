@@ -9,38 +9,60 @@
 	if( isset($_SESSION['username']) && isset($_COOKIE['friend']) ){
 		$user = $_SESSION['username'];
 		$friend = $_COOKIE['friend'];
-		$dbconn = db_connect();
 
-		// check which column you should use to store your data
-		$sql = "SELECT EXISTS(SELECT * FROM sc_friends WHERE u_username = '" . $user . "' AND u_friend = '" . $friend . "')";
-		$query = mysql_query($sql);
-		$exists = mysql_fetch_row($query);
-		if( $exists[0] == 1 ) {
-			//il destinatario è in u_friends
-			$wheretoread = "u_lastf";
+
+
+		$conn = db_connect('spm_db');
+
+		$lex_order = strcasecmp($user, $friend);  //marco, luca -> 1
+		if( $lex_order < 0 ) {
+
+			//l'utente è in u_username
+			$user1 = $user;
+			$user2 = $friend;
+
+			$query = $conn->prepare("SELECT u_lastf FROM sc_friends WHERE u_username = ? AND u_friend = ? ");
+			$query->bind_param('ss', $user1, $user2);			
+			$query->execute();
+			
+			/* bind variables to prepared statement's result */
+		    $query->bind_result($col);
+
+		    /* fetch values */
+		    if($query->fetch()) {
+		    	$response = (string) $col;
+		    }
+
 		} else {
-			//il destinatario è in u_username
-			$wheretoread = "u_lastu";
+			//l'utente è in u_friends
+			$user1 = $friend;
+			$user2 = $user;
+
+			$query = $conn->prepare("SELECT u_lastu FROM sc_friends WHERE u_username = ? AND u_friend = ? ");
+			$query->bind_param('ss', $user1, $user2);			
+			$query->execute();
+			
+			/* bind variables to prepared statement */
+		    $query->bind_result($col);
+
+		    /* fetch values */
+		    if ($query->fetch()) {
+		    	$response = (string) $col;
+		    }
 		}
 
-		$sql = "SELECT " . $wheretoread . " FROM sc_friends WHERE (u_username = '". $user . "' AND u_friend = '". $friend."' ) OR (u_username = '". $friend . "' AND u_friend = '". $user."' )";
-		$query = mysql_query($sql);
-		$result = mysql_fetch_row($query);
+		
+		$query->close();
+		$conn->close();
 
-		$list = parseMessage($result[0]);
+		$list = parseMessage($response);
 		$time = parseTime($list[1]);
 
-		if( $result[0] != $_COOKIE['last_sent'] && $list[0] != $user && $time != $_COOKIE['last_time'] ) {
-			echo "data: {$result[0]}\n\n";
+		// tecnicamente list[0] != user non dovrebbe servire più! ----> delete lastf / lastu when logging out
+		if( $response != $_COOKIE['last_sent'] && $list[0] != $user && $time != $_COOKIE['last_time'] ) {
+			echo "data: {$response}\n\n";
 			flush();
 		}
-
-		/*if( $list[1] != $_COOKIE['last_sent'] && $list[0] != $user ) {
-			echo "data: {$result[0]}\n\n";
-			flush();
-		}*/
-
-		mysql_close($dbconn);
 	}
 
 	

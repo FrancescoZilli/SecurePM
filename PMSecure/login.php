@@ -14,9 +14,7 @@
 		$_SESSION['nlog']++;
 	}
 
-  $dbconn = db_connect();
 	$login_correct = login_user($username, $password);
-  mysql_close($dbconn); 
 ?>
 
 <!DOCTYPE html>

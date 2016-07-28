@@ -14,19 +14,34 @@
 		$user = $_SESSION['username'];
 	}
 
-	$friend = $_POST['friend'];
+	$friend = $_POST['friend'];	
 	
-	$dbconn = db_connect();
-	$sql = "SELECT u_chatlog FROM sc_friends WHERE (u_username = '". $user . "' AND u_friend = '". $friend."' ) OR (u_username = '". $friend . "' AND u_friend = '". $user."' )";
-	$query = mysql_query($sql);
-	/*$result = array();
+	$lex_order = strcasecmp($user, $friend);  //marco, luca -> 1
+	if( $lex_order < 0 ) {
+		$user1 = $user;
+		$user2 = $friend;
+	} else {
+		$user1 = $friend;
+		$user2 = $user;
+	}
 
-	while( $item = mysql_fetch_array($query) ) {
-		array_push($result, $item);
-	}*/
-	$result = mysql_fetch_row($query);
+	// connect to database
+	$conn = db_connect('spm_db');
+	$query = $conn->prepare("SELECT u_chatlog FROM sc_friends WHERE u_username = ? AND u_friend = ?");
+	$query->bind_param('ss', $user1, $user2);
+	$query->execute();
 	
-	echo $result[0];
-	mysql_close($dbconn);
+	// store result
+	$query->bind_result($col);
+
+	if( $query->fetch() ) {		
+		$chatlog = (string) $col;
+	}
+
+	$query->close();
+	$conn->close();
+	
+	// return chatlog to the client
+	echo $chatlog;
 	
 ?>
