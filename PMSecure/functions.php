@@ -169,6 +169,8 @@ function generate_salt() {
 
 // retrieve salt from database, given the username
 function retrieve_salt($user) {
+	$salt = ""; // if undefined, empty string is returned
+	
 	$conn = db_connect('spm_db');
 	$stmt = $conn->prepare("SELECT u_salt FROM sc_users WHERE u_username = ?");
 	$stmt->bind_param('s', $user);

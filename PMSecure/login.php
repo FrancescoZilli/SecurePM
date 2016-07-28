@@ -7,14 +7,21 @@
 		$password = $_POST['passwd'];	
 	}
 
-  $_SESSION['username'] = $username;
+    $_SESSION['username'] = $username;
 
 
-	if( isset($_SESSION['nlog']) ) {
-		$_SESSION['nlog']++;
+	if( isset($_SESSION['#login']) ) {
+		$_SESSION['#login']++;
+
+        
+        $login_correct = login_user($username, $password);
+        
+        if( $_SESSION['#login'] > 3 && $login_correct == 1 && $_COOKIE['captcha'] == "n") {
+            $login_correct = 0;
+        }
 	}
 
-	$login_correct = login_user($username, $password);
+	
 ?>
 
 <!DOCTYPE html>
@@ -23,10 +30,22 @@
 <head>
     <link href='./css/style.css' rel='stylesheet'>
 
+    <script type="text/javascript">
+      var onloadCallback = function() {
+        grecaptcha.render('reCAPTCHA', {
+          'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+        });
+      };
+    </script>
+
 	<title>Log in</title>
 </head>
 
 <body>
+    <!-- GOOGLE'S reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+    </script>
 
   <!-- Login form-->
   <div class="login">
@@ -36,25 +55,47 @@
         <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" onblur="dio" /> -->
         <input type="password" name="passwd" placeholder="Password" required="required" />
         <?php
-        	if( $_SESSION['nlog'] > 3 && $login_correct == 0) {
-        		echo '<img src="http://www.captcha.net/images/recaptcha-example.gif" />';
+        	if( $_SESSION['#login'] > 3 && $login_correct == 0) {
+                echo '<div id="reCAPTCHA"></div>';
         	}
         ?>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Let me in!</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large" onclick="getCaptchaValue()">Let me in!</button>
     </form>
+
     <?php
-    	if( $login_correct == 0) {
-    		echo '<h4>Invalid login. Attempt #' . $_SESSION['nlog'] . '</h4>';
+    	if( $login_correct == 0 ) {
+    		echo '<h4>Invalid LOGIN. Attempt #' . $_SESSION['#login'] . '</h4>';
     	} else {
-    		echo '<h4>Hold on! Redirecting to chat...</h4>';
-    		$_SESSION['nlog'] = 0; //ripristino contatore
-        header( "refresh:0;url=chat.php" ); 
+        	echo '<h4>Hold on! Redirecting to chat...</h4>';
+        	unset($_SESSION['#login']); // distruggo #login, non serve più
+            unset($_COOKIE['captcha']);
+            header( "refresh:0;url=chat.php" ); // redirect to chat
     	}
     ?>
+
     <h4>Register <a href="./registration.html">here</a>!</h4>
   </div>
     
   <script src="./js/jquery.js"></script>
+
+  <script type="text/javascript">
+      function getCaptchaValue() {
+        var googleResponse = jQuery('#g-recaptcha-response').val();
+
+        // expire-time of cookie
+        var d = new Date();
+        var sec = 10; 
+        d.setTime(d.getTime() + (sec*1000)); // expires in seconds
+        var expires = "expires="+ d.toUTCString();
+
+        // captcha response creates a cookie
+        if (!googleResponse) {
+            document.cookie = "captcha=n;" + expires;
+        } else {
+            document.cookie = "captcha=y;" + expires;
+        }
+      }
+  </script>
 
 </body>
 </html>

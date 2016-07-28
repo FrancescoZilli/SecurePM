@@ -2,8 +2,8 @@
 
   session_start();
 
-  if( !isset($_SESSION['nlog']) && !isset($_SESSION['username']) ) {
-    $_SESSION['nlog'] = 0;
+  if( !isset($_SESSION['#login']) && !isset($_SESSION['username']) ) {
+    $_SESSION['#login'] = 1;
     $_SESSION['username'] = "";
   }
   

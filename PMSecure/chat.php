@@ -5,7 +5,6 @@
 
   if( isset($_SESSION['username']) ) {
     $user = $_SESSION['username'];
-    //echo $user;
   }  
 
   
