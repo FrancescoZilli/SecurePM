@@ -65,6 +65,9 @@
     // SEND MESSAGE TO SERVER (will redirect to your friend)
     function sendContent(){
       var message = document.getElementById("userText").value;
+
+      //parse message before sending
+      message = parseInput(message);
       
       if( message != "" ) {
         $.ajax({
@@ -219,7 +222,21 @@
     }
 
 
+    // SUBFUNCTION: parse input text before sending to the server
+    function parseInput(text) {
+      text = text.replace(/(?:\r\n|\r|\n)/g, ' '); //replace newlines with spaces
+      //text = text.replace(/[<>]/g, ' $& ');  // BETTER HAVE A LOOK AT THIS
+      text = text.replace(/</g, '&lt;');
+      text = text.replace(/>/g, '&gt;');
+
+      return text;
+    }
+
+
+
   </script>
+
+  
 
   <div id="sidebar">
 

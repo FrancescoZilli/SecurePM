@@ -6,15 +6,20 @@
 		$username = $_POST['user'];
 		$password = $_POST['passwd'];	
 
-        $login_correct = login_user($username, $password);
+    $login_correct = login_user($username, $password);
+
+    if( $login_correct == 1 ) {
+      $friend = $_COOKIE['friend'];
+      clear_message($username, $friend);
+    }
 	}
 
 
 	if( isset($_SESSION['#logout']) ) {
 		$_SESSION['#logout']++;
 	} else {
-        $_SESSION['#logout'] = 1;
-      }
+    $_SESSION['#logout'] = 1;
+  }
 
   if( !isset($login_correct) ) {
     $login_correct = 0;
@@ -53,8 +58,8 @@
     	} else {
     		echo '<h4>Hold on! Redirecting to main page...</h4>';
     		$_SESSION['#logout'] = 0; //ripristino contatore
-            session_destroy();
-            header( "refresh:3;url=index.php" );
+        session_destroy();
+        header( "refresh:3;url=index.php" );
     	}
     ?>
   </div>

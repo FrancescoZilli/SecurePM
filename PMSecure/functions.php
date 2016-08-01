@@ -147,6 +147,26 @@ function login_user($username, $password) {
 }
 
 
+// clear the your friend's last message when logging out
+function clear_message($usr, $fnd) {
+	$conn = db_connect('spm_db');
+
+	$lex_order = strcasecmp($usr, $fnd);
+	if( $lex_order < 0 ){
+		//l'utente è in u_username
+		$query = $conn->prepare("UPDATE sc_friends SET u_lastf = '' WHERE u_username = ? AND u_friend = ?");
+		$query->bind_param('ss', $usr, $fnd);
+	} else {
+		//l'utente è in u_friends
+		$query = $conn->prepare("UPDATE sc_friends SET u_lastu = '' WHERE u_username = ? AND u_friend = ?");
+		$query->bind_param('ss', $fnd, $usr);
+	}
+
+	$query->execute();
+	$query->close();
+}
+
+
 // hashing della password
 function hash_password($password) {
 	return sha1($password);
