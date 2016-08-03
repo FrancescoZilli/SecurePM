@@ -80,7 +80,7 @@
             var buffer = parseMessage(text);
             console.log("SENT: " + buffer);
             var textarea = document.getElementById('log');            
-            textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+            textarea.innerHTML += '<span class="bubble-right">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
             textarea.scrollTop = textarea.scrollHeight; 
           },
           error: function(jqXHR, textStatus, errorThrown) {
@@ -117,7 +117,7 @@
             var buffer = parseMessage(event.data);
             document.cookie = "last_time=" + parseTime(buffer[1]);  //ora dell'ultimo messaggio caricato
             var textarea = document.getElementById('log');
-            textarea.innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+            textarea.innerHTML += '<span class="bubble-left">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
             textarea.scrollTop = textarea.scrollHeight;
         };
       } else {
@@ -165,7 +165,11 @@
             var msg_lst = parseMessageList(text);
             for(var i=0; i<msg_lst.length-1; i++) { //-1 since last one will be an empty string
               var buffer = parseMessage(msg_lst[i]);
-              document.getElementById('log').innerHTML += '<span class="comment">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+
+              if( buffer[0] != destinatario)
+                document.getElementById('log').innerHTML += '<span class="bubble-right">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+              else
+                document.getElementById('log').innerHTML += '<span class="bubble-left">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
             }
             var textarea = document.getElementById('log');
             textarea.scrollTop = textarea.scrollHeight;            
