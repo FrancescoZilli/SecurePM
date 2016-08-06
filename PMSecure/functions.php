@@ -116,12 +116,10 @@ function add_friend($user1, $user2){
 		}
 
 		if(!$success){  //stampo un errore
-			echo '<strong>Attenzione errore nella query:</strong> ' . $sql . "\n" . $conn->error() .'</div>';
+			echo 'Attenzione errore nella query: ' . $sql . "\n" . $conn->error();
 		}
 		else{
-			echo '<div class="alert alert-success">
-					<strong>Hai aggiunto amico con successo</strong>
-				  </div>';
+			echo 'Hai aggiunto amico con successo';
 		}
 		$conn->close();
 	}	

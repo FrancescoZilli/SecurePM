@@ -19,7 +19,9 @@
         if( $_SESSION['#login'] > 3 && $login_correct == 1 && $_COOKIE['captcha'] == "n") {
             $login_correct = 0;
         }
-	}
+	} else {
+        $_SESSION['#login'] = 0;
+    }
 
 	
 ?>

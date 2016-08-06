@@ -48,10 +48,13 @@
 
           displayFriends();
 
-          // get last friend you have chatted with
+          // get last friend you have chatted with or empty chat
           var last_friend = getLastFriend();
-          if( last_friend != "" ) {
+          if( last_friend != "" ) {            
             selectFriend(last_friend);
+          } else {
+            $('#composer').css('height', '0%');
+            $('#log').css('height', '90%');
           }
           
         },
@@ -80,7 +83,7 @@
             var buffer = parseMessage(text);
             console.log("SENT: " + buffer);
             var textarea = document.getElementById('log');            
-            textarea.innerHTML += '<span class="bubble-right">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+            textarea.innerHTML += createBubble(buffer, "bubble-right");
             textarea.scrollTop = textarea.scrollHeight; 
           },
           error: function(jqXHR, textStatus, errorThrown) {
@@ -93,13 +96,18 @@
     }
 
 
+
     // SELECT FRIEND YOU WANT TO CHAT WITH
     function selectFriend(user){
+
       destinatario = user;
       document.getElementById("composer").style.visibility = "visible";
+      $('#composer').css('height', '15%');
+      $('#log').css('height', '75%');
       document.getElementById("userText").value = "";
-      document.getElementById("top_name").innerHTML = destinatario;
+      document.getElementById("topbar").innerHTML = destinatario;
       document.getElementById("log").innerHTML = "";
+      
       
       document.cookie = "friend=" + destinatario;
       loadConversation(); //select here previous conversations with user
@@ -117,7 +125,7 @@
             var buffer = parseMessage(event.data);
             document.cookie = "last_time=" + parseTime(buffer[1]);  //ora dell'ultimo messaggio caricato
             var textarea = document.getElementById('log');
-            textarea.innerHTML += '<span class="bubble-left">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+            textarea.innerHTML += createBubble(buffer, "bubble-left");
             textarea.scrollTop = textarea.scrollHeight;
         };
       } else {
@@ -141,7 +149,7 @@
           cache: false,
           success: function(text){
             alert(text);
-            askForFriends();    // Needs a FIX!!!! --> friendlist array
+            askForFriends();    
           },
           error: function(jqXHR, textStatus, errorThrown) {
                 alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -167,12 +175,13 @@
               var buffer = parseMessage(msg_lst[i]);
 
               if( buffer[0] != destinatario)
-                document.getElementById('log').innerHTML += '<span class="bubble-right">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+                document.getElementById('log').innerHTML += createBubble(buffer, "bubble-right");
               else
-                document.getElementById('log').innerHTML += '<span class="bubble-left">'+ buffer[0] + " - " + buffer[1] + " - " + buffer[2] +'</span><br>';
+                document.getElementById('log').innerHTML += createBubble(buffer, "bubble-left");
             }
             var textarea = document.getElementById('log');
-            textarea.scrollTop = textarea.scrollHeight;            
+            textarea.scrollTop = textarea.scrollHeight; 
+            $('#log').css('opacity', '1');      
           },
           error: function(jqXHR, textStatus, errorThrown) {
                 alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -206,7 +215,7 @@
       document.getElementById('friend_to_add').value = "";
       friendlist.sort();
       for( var i=0; i<friendlist.length; i++ ) {
-        var item = '<li onclick = "selectFriend(' + "'" + friendlist[i] + "'" + ')"> ' + friendlist[i] + '</li>';
+        var item = '<li class="friend-li" onclick = "selectFriend(' + "'" + friendlist[i] + "'" + ')"> ' + friendlist[i] + '</li>';
         document.getElementById('friendlist').innerHTML += item;
       }
 
@@ -237,6 +246,14 @@
     }
 
 
+    // create a message bubble
+    function createBubble(buf, cls) {
+      var time = '<div class="bubble-small">' + buf[1] + '</div>';
+      var final = '<div class="' + cls + '">' + buf[2] + '<br>' + time + '</div>';
+      return final;
+    }
+
+
 
   </script>
 
@@ -250,7 +267,7 @@
       <h4>Friends</h4>
     </div>
     <ul class="friends" id="friendlist"></ul>
-
+    <br>
     <div id="add_friend">
       <input type="text"  value="" id="friend_to_add"/>
       <input type="submit" value="add friend" onclick="addFriend()" /> 
@@ -261,16 +278,13 @@
   </div>
 
   <div id="primary">
-    <div id= "topbar">
-      <div id="top_name"></div>
-    </div>
+  
+    <div id= "topbar"></div>
 
-    <div id="log">
-
-    </div>
+    <div id="log"></div>
 
     <div id="composer">
-        <textarea id="userText"> </textarea>
+        <textarea id="userText"></textarea>
         <button onclick="sendContent()">Send</button>
     </div>
     
