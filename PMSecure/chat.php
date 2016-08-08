@@ -28,6 +28,13 @@
     window.onload = askForFriends;
     var destinatario = "";
     var friendlist = []; //create an array of friends to avoid double-listing them
+
+    $(document).ready(function(){
+        $('#userText').keypress(function(e){
+          if(e.keyCode==13)
+          $('#send').click();
+        });
+    });
     
 
     // LOAD YOUR FRIENDS LIST
@@ -68,11 +75,12 @@
     // SEND MESSAGE TO SERVER (will redirect to your friend)
     function sendContent(){
       var message = document.getElementById("userText").value;
+      document.getElementById("userText").value = "";
 
       //parse message before sending
       message = parseInput(message);
       
-      if( message != "" ) {
+      if( message != "" && message != " " ) {
         $.ajax({
           url: './db_send.php',
           type: 'POST',
@@ -92,7 +100,6 @@
         });
       }
 
-      document.getElementById("userText").value = "";
     }
 
 
@@ -102,8 +109,8 @@
 
       destinatario = user;
       document.getElementById("composer").style.visibility = "visible";
-      $('#composer').css('height', '15%');
-      $('#log').css('height', '75%');
+      $('#composer').css('height', '10%');
+      $('#log').css('height', '85%');
       document.getElementById("userText").value = "";
       document.getElementById("topbar").innerHTML = destinatario;
       document.getElementById("log").innerHTML = "";
@@ -262,10 +269,9 @@
   <div id="sidebar">
 
     <div id="user"> <?php echo $user ?> </div>
+    <a href="./logout.php"><div id="logout">log out m8</div></a>
 
-    <div>
-      <h4>Friends</h4>
-    </div>
+    <h4>Friends</h4>
     <ul class="friends" id="friendlist"></ul>
     <br>
     <div id="add_friend">
@@ -273,7 +279,6 @@
       <input type="submit" value="add friend" onclick="addFriend()" /> 
     </div>
 
-    <h4>Log out <a href="./logout.php">here</a>!</h4>
 
   </div>
 
@@ -285,7 +290,7 @@
 
     <div id="composer">
         <textarea id="userText"></textarea>
-        <button onclick="sendContent()">Send</button>
+        <button id="send" onclick="sendContent()">Send</button>
     </div>
     
     <script src="./js/jquery.js"></script>
