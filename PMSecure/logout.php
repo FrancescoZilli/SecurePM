@@ -13,10 +13,6 @@
     if( $_COOKIE['ego'] == $username )  // make sure right person il logging out
       $login_correct = login_user($username, $password);
 
-    if( $login_correct == 1 ) {
-      $friend = $_COOKIE['friend'];
-      clear_message($username, $friend);
-    }
 	}
 
 

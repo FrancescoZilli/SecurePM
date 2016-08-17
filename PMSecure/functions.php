@@ -232,9 +232,11 @@ function compareTimes($t1, $t2) {
 	$h2 = (int) substr($t2, 0, 2);
 	$m2 = (int) substr($t2, 3, 2);
 
+	$res = 0;
+
 	if( $h1 > $h2 )
 		$res = 1;
-	else if( $h1 == $h2 && $m1 > $m2 )
+	else if( $h1 == $h2 && $m1 >= $m2 )
 		$res = 1;
 	else
 		$res = 0;
@@ -242,36 +244,6 @@ function compareTimes($t1, $t2) {
 	return $res;
 
 }
-
-
-/*
-//stampo la lista degli utenti
-function lista_utenti(){
-	$risultato="";
-	$dbconn=db_dbconnect();
-	$sql="SELECT * FROM sc_users";
-	$risposta = mysql_query($sql) or die("Errore nella query: " . $sql . "\n" . mysql_error());
-	
-	while ($riga = mysql_fetch_row($risposta)) {  //restituisce una riga della tabella sc_users altrimenti FALSE
-	    $risultato[] = $riga;
-	  	}
-		mysql_close($dbconn);
-	return $risultato;  //ritorno l'array risultato
-}
-
-
-//rimuovo un utente
-function rimuovi_utente($user_id){
-	$dbconn=db_dbconnect();
-	$sql="DELETE FROM sc_users WHERE user_id = $user_id";
-	$risposta=mysql_query($sql) or die("Errore nella query: " . $sql . "\n" . mysql_error());
-    mysql_close($dbconn);
-    header("Location: database_index.php");
-
-}
-*/
-
-
 
 
 ?>

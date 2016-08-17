@@ -45,7 +45,6 @@
         dataType: "json",
         cache: false,
         success: function(json) {
-          console.log("gotit");    // VERIFY ARRAY LENGTH TO SEE IF SOMEONE HAS NO FRIENDS
 
           for( var i=0; i<json.length; i++ ) {
             if( !friendlist.includes(json[i]) )
@@ -62,8 +61,7 @@
             $('#topbar').css('height', '0%');
             $('#composer').css('height', '0%');
             $('#log').css('height', '100%');
-          }
-          
+          }          
         },
         error: function(jqXHR, textStatus, errorThrown) {
           alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -247,7 +245,6 @@
     // SUBFUNCTION: parse input text before sending to the server
     function parseInput(text) {
       text = text.replace(/(?:\r\n|\r|\n)/g, ' '); //replace newlines with spaces
-      //text = text.replace(/[<>]/g, ' $& ');  // BETTER HAVE A LOOK AT THIS
       text = text.replace(/</g, '&lt;');
       text = text.replace(/>/g, '&gt;');
 
@@ -264,10 +261,9 @@
 
       var date = '<div class="bubble-small">' + time + '</div>';
       var final = '<div class="' + cls + '">' + buf[2] + '<br>' + date + '</div>';
+      
       return final;
     }
-
-
 
   </script>
 

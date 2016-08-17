@@ -62,6 +62,8 @@
 			echo "data: {$response}\n\n";
 			flush();
 		}
+
+		clear_messsage($user, $friend);
 	}
 
 	
