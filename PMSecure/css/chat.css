@@ -8,6 +8,7 @@ html, body {
     height: 100%;
     margin:0;
     padding:0;
+    font-family: 'Open Sans', sans-serif;
 }
 
 
@@ -66,12 +67,18 @@ textarea {
     resize: none;
 }
 
-button {
+#send {
     right: 0px;
     width: 10%;
     height: 100%;
+    color: #fff;
+    border-color: #4B4A67;
+    background-color: #4B4A67;
+}
 
-    border-radius: 4px;
+#send:hover, #send:active {
+    border-color: #ED7C63;
+    background-color: #ED7C63;
 }
 
 .long-content {
@@ -81,6 +88,15 @@ button {
 
 
 /* BAR ON THE LEFT */
+.title {
+    font-family: 'Open Sans', sans-serif;
+    border: none;
+    text-align: center;
+    color: #fff; 
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    margin-bottom: .5em;
+}
+
 #sidebar {
     width: 20%;
     padding-top: 10px;
@@ -102,6 +118,10 @@ button {
     background: #7E8987;
 }
 
+a:link, a:visited {
+    text-decoration: none;
+}
+
 #logout {
     margin: auto;
     width: 90%;    
@@ -112,9 +132,47 @@ button {
     background: #4B4A67;
 }
 
+#logout:hover {
+   background: #ED7C63; 
+}
+
+#add_friend {
+    margin: auto;
+    width: 90%;
+}
+
+input { 
+  width: 100%; 
+  margin-bottom: 10px; 
+  background: rgba(0,0,0,0.3);
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 13px;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,0,0,0.3);
+  box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+}
+
+#add_button {
+    height: 2em;        
+    text-align:center;
+    color: #fff;
+    font-size: 13px;
+    vertical-align:middle;
+
+    background: #4B4A67;
+}
+
+#add_button:hover {
+    background: #ED7C63;
+}
+
 .friends {
-    width: 100%;
+    width: 90%;
     height: 50%; 
+    margin: auto;
     overflow-x: hidden; 
     overflow-y: auto;
     margin-bottom: 10px; 
@@ -139,6 +197,7 @@ button {
     background: #4B4A67;
     margin-bottom: 1em;
     text-align: center;
+    vertical-align:middle;
 }
 
 .friend-li:hover {
@@ -168,10 +227,30 @@ button {
 .bubble-right {
     float:right;
     margin-left: 10%;
-    background-color: #C2CFB2;
+    background-color: #8DB580;
     text-align: right;
 }
 
 .bubble-small {    
     font-size: .5em;
+}
+
+
+/* SCROLL BAR */
+::-webkit-scrollbar {
+   width: 7px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #7E8987; 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  background: #C2CFB2; 
 }

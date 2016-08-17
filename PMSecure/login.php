@@ -4,13 +4,16 @@
 
 	if( isset($_POST["user"]) && isset($_POST["passwd"]) ){
 		$username = $_POST['user'];
-		$password = $_POST['passwd'];	
+		$password = $_POST['passwd'];
+
+        setcookie('ego', $username, time()+(60*60*24)); // dura un giorno
 	}
 
     $_SESSION['username'] = $username;
 
 
 	if( isset($_SESSION['#login']) ) {
+        
 		$_SESSION['#login']++;
 
         
@@ -19,6 +22,7 @@
         if( $_SESSION['#login'] > 3 && $login_correct == 1 && $_COOKIE['captcha'] == "n") {
             $login_correct = 0;
         }
+
 	} else {
         $_SESSION['#login'] = 0;
     }

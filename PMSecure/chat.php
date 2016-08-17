@@ -13,7 +13,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href='./css/style.css' rel='stylesheet'>
     <link href='./css/chat.css' rel='stylesheet'>
 
     <title>Secure Push Messaging</title>
@@ -32,7 +31,7 @@
     $(document).ready(function(){
         $('#userText').keypress(function(e){
           if(e.keyCode==13)
-          $('#send').click();
+            $('#send').click();
         });
     });
     
@@ -60,13 +59,14 @@
           if( last_friend != "" ) {            
             selectFriend(last_friend);
           } else {
+            $('#topbar').css('height', '0%');
             $('#composer').css('height', '0%');
-            $('#log').css('height', '90%');
+            $('#log').css('height', '100%');
           }
           
         },
         error: function(jqXHR, textStatus, errorThrown) {
-              alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+          alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
         }
       });
     }
@@ -109,6 +109,7 @@
 
       destinatario = user;
       document.getElementById("composer").style.visibility = "visible";
+      $('#topbar').css('height', '5%');
       $('#composer').css('height', '10%');
       $('#log').css('height', '85%');
       document.getElementById("userText").value = "";
@@ -117,8 +118,9 @@
       
       
       document.cookie = "friend=" + destinatario;
-      loadConversation(); //select here previous conversations with user
+      loadConversation(destinatario); //select here previous conversations with user
       openConnection();
+
     }
 
 
@@ -169,19 +171,19 @@
 
 
     // LOAD THE CONVERSATION YOU HAD WITH YOUR FRIEND
-    function loadConversation() {
+    function loadConversation(user) {
       $.ajax({
           url: './db_retrievelogs.php',
           type: 'POST',
           dataType: 'text',
-          data: {friend: destinatario}, //must be set and should be
+          data: {friend: user}, //must be set and should be
           cache: false,
           success: function(text){
             var msg_lst = parseMessageList(text);
             for(var i=0; i<msg_lst.length-1; i++) { //-1 since last one will be an empty string
               var buffer = parseMessage(msg_lst[i]);
 
-              if( buffer[0] != destinatario)
+              if( buffer[0] != user)
                 document.getElementById('log').innerHTML += createBubble(buffer, "bubble-right");
               else
                 document.getElementById('log').innerHTML += createBubble(buffer, "bubble-left");
@@ -255,8 +257,13 @@
 
     // create a message bubble
     function createBubble(buf, cls) {
-      var time = '<div class="bubble-small">' + buf[1] + '</div>';
-      var final = '<div class="' + cls + '">' + buf[2] + '<br>' + time + '</div>';
+      var tmp = buf[1].split(" ");
+      var day = tmp[0].substring(0,5);
+      var hour = tmp[1].substring(0,5);
+      var time = day + " " + hour;
+
+      var date = '<div class="bubble-small">' + time + '</div>';
+      var final = '<div class="' + cls + '">' + buf[2] + '<br>' + date + '</div>';
       return final;
     }
 
@@ -270,13 +277,13 @@
 
     <div id="user"> <?php echo $user ?> </div>
     <a href="./logout.php"><div id="logout">log out m8</div></a>
-
-    <h4>Friends</h4>
+    <br>
+    <p class="title">friend-list</p>
     <ul class="friends" id="friendlist"></ul>
     <br>
     <div id="add_friend">
       <input type="text"  value="" id="friend_to_add"/>
-      <input type="submit" value="add friend" onclick="addFriend()" /> 
+      <div id="add_button" onclick="addFriend()">add friend</div>
     </div>
 
 

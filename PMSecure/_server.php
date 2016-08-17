@@ -57,9 +57,8 @@
 
 		$list = parseMessage($response);
 		$time = parseTime($list[1]);
-
-		// tecnicamente list[0] != user non dovrebbe servire più! ----> delete lastf / lastu when logging out
-		if( $response != $_COOKIE['last_sent'] && $list[0] != $user && $time != $_COOKIE['last_time'] ) {
+		
+		if( $response != $_COOKIE['last_sent'] && compareTimes($time, $_COOKIE['last_time']) == 1 ) {
 			echo "data: {$response}\n\n";
 			flush();
 		}

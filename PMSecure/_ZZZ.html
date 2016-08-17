@@ -12,10 +12,24 @@
     <!-- Login form-->
     <div class="login">
       <script type="text/javascript">
+
+        function check(text) {
+          alert(text);
+          return "UEZ"+text;
+        }
+
         var str = "26/07/2016 15:07:17";
         var tmp = str.split(" ");
         var time = tmp[1].substring(0, 5);
-        alert(time);
+        //alert(time);
+
+        var date = new Date;
+        var seconds = date.getSeconds();
+        //alert(seconds);
+
+        var text = '<div class="bubble-small">';
+        text = text.replace(/\<*\>/g, check('$&'));
+        alert(text);
       </script> 
     </div> 
 

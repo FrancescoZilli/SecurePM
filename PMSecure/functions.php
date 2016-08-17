@@ -35,6 +35,7 @@ function check_user($username) {
 	$conn->close();
 
 	return $exists;
+
 }
 
 
@@ -47,12 +48,12 @@ function insert_user($name, $surname, $bday, $address, $username, $password) {
 	$data = "";
 	$conn = db_connect('spm_db');
 
-	$stm = $conn->prepare("INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday, u_salt) VALUES (?, ?, ?, ?, ?, ?, ?)");
+	$stmt = $conn->prepare("INSERT INTO sc_users (u_name, u_surname, u_username, u_password, u_address, u_birthday, u_salt) VALUES (?, ?, ?, ?, ?, ?, ?)");
 	$stmt->bind_param('sssssss', $name, $surname, $username , $hpassword, $address, $bday, $salt );
 	$success = $stmt->execute();
 
 	if(!$success){  //stampo un errore
-		if($conn->errno() == 1062) {
+		if($conn->errno == 1062) {
 			$data = "USERNAME e/o MAIL inserite sono già utilizzate e non più disponibili";			
 		} else {
 		 	$data  = "ERRORE nell'inserimento dell'utente; contattare admin";		 	
@@ -94,7 +95,7 @@ function add_friend($user1, $user2){
 				$sql->close();
 			}
 			
-		} else{
+		} else {
 
 			$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_friends WHERE u_username = ? AND u_friend = ?)" );
 			$stmt->bind_param('ss', $user2, $user1);
@@ -116,10 +117,7 @@ function add_friend($user1, $user2){
 		}
 
 		if(!$success){  //stampo un errore
-			echo 'Attenzione errore nella query: ' . $sql . "\n" . $conn->error();
-		}
-		else{
-			echo 'Hai aggiunto amico con successo';
+			echo 'Query error: ' . $sql . "\n" . $conn->error();
 		}
 		$conn->close();
 	}	
@@ -221,8 +219,28 @@ function parseMessage($string) {
 // split date in useful values
 function parseTime($date) {
 	list ($giorno, $ora) = split(" ", $date);
-
+	$len = strlen($ora) - 3;
+ 	$ora = substr($ora, 0, $len);
 	return $ora;
+}
+
+// approximately tells you which is first (no days since cookies last less)
+// returns 1 if $t1 is greater than $t2 ($t1 comes after $t2)
+function compareTimes($t1, $t2) {
+	$h1 = (int) substr($t1, 0, 2);
+	$m1 = (int) substr($t1, 3, 2);
+	$h2 = (int) substr($t2, 0, 2);
+	$m2 = (int) substr($t2, 3, 2);
+
+	if( $h1 > $h2 )
+		$res = 1;
+	else if( $h1 == $h2 && $m1 > $m2 )
+		$res = 1;
+	else
+		$res = 0;
+
+	return $res;
+
 }
 
 
