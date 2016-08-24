@@ -242,7 +242,6 @@ function compareTimes($t1, $t2) {
 		$res = 0;
 
 	return $res;
-
 }
 
 

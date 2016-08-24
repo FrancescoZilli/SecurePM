@@ -7,6 +7,10 @@
     $user = $_SESSION['username'];
   }  
 
+  if( !isset($_SESSION['username']) ||  $_SESSION['username'] == "" ) {
+    echo "<div class='sessionerror'> INVALID SESSION </div>";
+  }
+
   
 ?>
 
@@ -28,6 +32,7 @@
     var destinatario = "";
     var friendlist = []; //create an array of friends to avoid double-listing them
 
+    // Event Listener for the Enter key
     $(document).ready(function(){
         $('#userText').keypress(function(e){
           if(e.keyCode==13)

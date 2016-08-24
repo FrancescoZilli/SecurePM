@@ -21,6 +21,7 @@
     <!-- Login form-->
     <div class="login">
       <h1>Secure PMs</h1>
+
       <form action="login.php" method="post">
           <input type="text" name="user" placeholder="Username" required="required" />
           <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" onblur="dio" /> -->

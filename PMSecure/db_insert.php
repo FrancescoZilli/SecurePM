@@ -25,7 +25,7 @@ include('functions.php');
 			}
 			else {
 				echo "Completare tutti i campi prima di confermare il form";
-				header( "refresh:3;url=registration.html" );
+				header( "refresh:2;url=registration.html" );
 			}
 
       		echo '<h4>' . $ins_result . '</h4>';

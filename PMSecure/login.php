@@ -9,13 +9,11 @@
         setcookie('ego', $username, time()+(60*60*24)); // dura un giorno
 	}
 
-    $_SESSION['username'] = $username;
-
 
 	if( isset($_SESSION['#login']) ) {
         
 		$_SESSION['#login']++;
-
+        $_SESSION['username'] = $username;
         
         $login_correct = login_user($username, $password);
         
@@ -70,14 +68,16 @@
     </form>
 
     <?php
-    	if( $login_correct == 0 ) {
-    		echo '<h4>Invalid LOGIN. Attempt #' . $_SESSION['#login'] . '</h4>';
-    	} else {
-        	echo '<h4>Hold on! Redirecting to chat...</h4>';
-        	unset($_SESSION['#login']); // distruggo #login, non serve più
-            unset($_COOKIE['captcha']);
-            header( "refresh:0;url=chat.php" ); // redirect to chat
-    	}
+        if( isset($login_correct) ) {
+        	if( $login_correct == 0 ) {
+        		echo '<h4>Invalid LOGIN. Attempt #' . $_SESSION['#login'] . '</h4>';
+        	} else {
+            	echo '<h4>Hold on! Redirecting to chat...</h4>';
+            	unset($_SESSION['#login']); // distruggo #login, non serve più
+                unset($_COOKIE['captcha']);
+                header( "refresh:0;url=chat.php" ); // redirect to chat
+        	}
+        }
     ?>
 
     <h4>Register <a href="./registration.html">here</a>!</h4>
@@ -87,7 +87,7 @@
 
   <script type="text/javascript">
       function getCaptchaValue() {
-        var googleResponse = jQuery('#g-recaptcha-response').val();
+        var googleResponse = $('#g-recaptcha-response').val();
 
         // expire-time of cookie
         var d = new Date();
