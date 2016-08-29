@@ -24,7 +24,7 @@
 
       <form action="login.php" method="post">
           <input type="text" name="user" placeholder="Username" required="required" />
-          <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" onblur="dio" /> -->
+          <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" />
           <input type="password" name="passwd" placeholder="Password" required="required" />
           <button type="submit" class="btn btn-primary btn-block btn-large">Let me in!</button>
       </form>

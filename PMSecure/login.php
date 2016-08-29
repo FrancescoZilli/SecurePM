@@ -2,9 +2,10 @@
 	include('functions.php');
 	session_start();
 
-	if( isset($_POST["user"]) && isset($_POST["passwd"]) ){
+	if( isset($_POST["user"]) && isset($_POST["passwd"]) && isset($_POST["bday"]) ){
 		$username = $_POST['user'];
 		$password = $_POST['passwd'];
+        $birthday = $_POST["bday"];
 
         setcookie('ego', $username, time()+(60*60*24)); // dura un giorno
 	}
@@ -15,7 +16,7 @@
 		$_SESSION['#login']++;
         $_SESSION['username'] = $username;
         
-        $login_correct = login_user($username, $password);
+        $login_correct = login_user($username, $password, $birthday);
         
         if( $_SESSION['#login'] > 3 && $login_correct == 1 && $_COOKIE['captcha'] == "n") {
             $login_correct = 0;
@@ -57,7 +58,7 @@
     <h1>Secure PMs</h1>
     <form action="login.php" method="post">
         <input type="text" name="user" placeholder="Username" required="required" />
-        <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" onblur="dio" /> -->
+        <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02"  /> 
         <input type="password" name="passwd" placeholder="Password" required="required" />
         <?php
         	if( $_SESSION['#login'] > 3 && $login_correct == 0) {

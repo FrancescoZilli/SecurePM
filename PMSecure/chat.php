@@ -92,10 +92,11 @@
           cache: false,
           success: function(text){
             var buffer = parseMessage(text);
-            console.log("SENT: " + buffer);
+            console.log("SENT: " + buffer[1]);
             var textarea = document.getElementById('log');            
             textarea.innerHTML += createBubble(buffer, "bubble-right");
             textarea.scrollTop = textarea.scrollHeight; 
+            document.cookie = "last_time=" + parseTime(buffer[1]);
           },
           error: function(jqXHR, textStatus, errorThrown) {
                 alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);

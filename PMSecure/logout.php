@@ -6,12 +6,13 @@
     $login_correct = 0;
   }
 
-	if( isset($_POST["user"]) && isset($_POST["passwd"]) ){
+	if( isset($_POST["user"]) && isset($_POST["passwd"]) && isset($_POST["bday"]) ){
 		$username = $_POST['user'];
 		$password = $_POST['passwd'];	
+    $birthday = $_POST["bday"];
 
     if( $_COOKIE['ego'] == $username )  // make sure right person il logging out
-      $login_correct = login_user($username, $password);
+      $login_correct = login_user($username, $password, $birthday);
 
 	}
 
@@ -34,7 +35,7 @@
 </head>
 
 <body>
-  <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02" onblur="dio" /> -->
+  <!-- <input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02"/> -->
 
   <!-- New login form -->
   <div class="login">
@@ -43,6 +44,7 @@
         echo '<h1>One more thing...</h1>';
         echo '<form action="logout.php" method="post">';
         echo '<input type="text" name="user" placeholder="Username" required="required" />';
+        echo '<input type="date" name="bday" placeholder="Birthday" required="required" max="2000-01-02"/>';
         echo '<input type="password" name="passwd" placeholder="Password" required="required" />';
         if( $_SESSION['#logout'] > 3 ) {
           echo '<img src="http://www.captcha.net/images/recaptcha-example.gif" />';

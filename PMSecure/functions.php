@@ -125,12 +125,12 @@ function add_friend($user1, $user2){
 
 
 // controllo se username e password corrispondono ad un utente
-function login_user($username, $password) {
+function login_user($username, $password, $birthday) {
 	$conn = db_connect('spm_db');
 	$salt = retrieve_salt($username);
 	$hpassword = hash_password($password . $salt);
-	$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = ? AND u_password = ?)");
-	$stmt->bind_param('ss', $username, $hpassword);
+	$stmt = $conn->prepare("SELECT EXISTS(SELECT * FROM sc_users WHERE u_username = ? AND u_password = ? AND u_birthday = ?)");
+	$stmt->bind_param('sss', $username, $hpassword, $birthday);
 	$stmt->execute();
 	$stmt->bind_result($exists);
 	if( $stmt->fetch() )
