@@ -1,6 +1,7 @@
 <?php 
 	include('functions.php');
 
+	error_reporting(0);
 	session_start();
 
 	// Prevent caching.

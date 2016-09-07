@@ -1,5 +1,7 @@
 <?php
-include('functions.php');
+	include('functions.php');
+
+	error_reporting(0);
 
 	$name = $_POST['name'];
 	$surname = $_POST['surname'];
@@ -7,8 +9,6 @@ include('functions.php');
 	$address = $_POST['address'];
 	$username = $_POST['username'];
 	$password = $_POST['password'];
-
-
 ?>
 
 <html>

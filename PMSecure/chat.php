@@ -1,6 +1,7 @@
 <?php
   include('functions.php');
 
+  error_reporting(0);
   session_start();
 
   if( isset($_SESSION['username']) ) {
@@ -31,6 +32,8 @@
     window.onload = askForFriends;
     var destinatario = "";
     var friendlist = []; //create an array of friends to avoid double-listing them
+
+    var chatlog = "";
 
     // Event Listener for the Enter key
     $(document).ready(function(){
@@ -92,7 +95,7 @@
           cache: false,
           success: function(text){
             var buffer = parseMessage(text);
-            console.log("SENT: " + buffer[1]);
+            //console.log("SENT: " + buffer[1]);
             var textarea = document.getElementById('log');            
             textarea.innerHTML += createBubble(buffer, "bubble-right");
             textarea.scrollTop = textarea.scrollHeight; 
@@ -120,7 +123,6 @@
       document.getElementById("topbar").innerHTML = destinatario;
       document.getElementById("log").innerHTML = "";
       
-      
       document.cookie = "friend=" + destinatario;
       loadConversation(destinatario); //select here previous conversations with user
       openConnection();
@@ -130,17 +132,28 @@
 
     // OPEN A CONNECTION TO CHECK IF NEW MESSAGES ARRIVE
     function openConnection() {
-      if(typeof(EventSource) !== "undefined") {
+      if( typeof(EventSource) !== "undefined" ) {
+
         var source = new EventSource("_server.php");
         source.onmessage = function(event) {
-            console.log("GOT: " + event.data);
-            document.cookie = "last_sent=" + event.data;  //ultimo messaggio caricato
-            var buffer = parseMessage(event.data);
-            document.cookie = "last_time=" + parseTime(buffer[1]);  //ora dell'ultimo messaggio caricato
-            var textarea = document.getElementById('log');
+
+          var textarea = document.getElementById('log');
+
+          document.cookie = "last_sent=" + event.data;  //ultimo messaggio caricato
+          var buffer = parseMessage(event.data);
+          document.cookie = "last_time=" + parseTime(buffer[1]);  //ora dell'ultimo messaggio caricato
+
+          var data_ind = event.data.length + 5; // il cinque è l'ultimo divisore
+          var chatlog_ind = chatlog.length - data_ind; // indice dell'ultimo msg
+          var last_in_log = chatlog.substring(chatlog_ind, chatlog.length - 5); 
+
+          if( event.data != last_in_log ) {
             textarea.innerHTML += createBubble(buffer, "bubble-left");
             textarea.scrollTop = textarea.scrollHeight;
+          }
+          
         };
+
       } else {
           document.getElementById("log").innerHTML = "Sorry, your browser does not support server-sent events...";
       }          
@@ -183,6 +196,9 @@
           data: {friend: user}, //must be set and should be
           cache: false,
           success: function(text){
+            chatlog = text;
+            console.log(chatlog);
+
             var msg_lst = parseMessageList(text);
             for(var i=0; i<msg_lst.length-1; i++) { //-1 since last one will be an empty string
               var buffer = parseMessage(msg_lst[i]);

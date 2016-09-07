@@ -1,16 +1,19 @@
 <?php
 	include('functions.php');
+    error_reporting(0);
 	session_start();
+
+    //porzione di codice che recupera le informazioni in input del form di login 
 
 	if( isset($_POST["user"]) && isset($_POST["passwd"]) && isset($_POST["bday"]) ){
 		$username = $_POST['user'];
 		$password = $_POST['passwd'];
         $birthday = $_POST["bday"];
-
+        //ego memorizza il nome in input, usato per controlli successivi
         setcookie('ego', $username, time()+(60*60*24)); // dura un giorno
 	}
 
-
+    //controllo del numero di tentativi di accesso 
 	if( isset($_SESSION['#login']) ) {
         
 		$_SESSION['#login']++;
@@ -87,6 +90,7 @@
   <script src="./js/jquery.js"></script>
 
   <script type="text/javascript">
+  //funzione che restituisce il valore del captcha e lo memorizza in un cookie 
       function getCaptchaValue() {
         var googleResponse = $('#g-recaptcha-response').val();
 

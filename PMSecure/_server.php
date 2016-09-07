@@ -4,6 +4,7 @@
 	header('Content-Type: text/event-stream');
 	header('Cache-Control: no-cache');
 
+	error_reporting(0);
 	session_start();
 
 	if( isset($_SESSION['username']) && isset($_COOKIE['friend']) ){
@@ -51,19 +52,33 @@
 		    }
 		}
 
-		
 		$query->close();
+
+		// clear message after fetching it
+		if( $lex_order < 0 ){
+			//l'utente è in u_username
+			$query2 = $conn->prepare("UPDATE sc_friends SET u_lastf = '' WHERE u_username = ? AND u_friend = ?");
+			$query2->bind_param('ss', $user, $friend);
+		} else {
+			//l'utente è in u_friends
+			$query2 = $conn->prepare("UPDATE sc_friends SET u_lastu = '' WHERE u_username = ? AND u_friend = ?");
+			$query2->bind_param('ss', $friend, $user);
+		}
+
+		$query2->execute();
+		$query2->close();
+		
 		$conn->close();
 
 		$list = parseMessage($response);
 		$time = parseTime($list[1]);
-		
-		if( $response != $_COOKIE['last_sent'] && compareTimes($time, $_COOKIE['last_time']) == 1 ) {
+
+		if( $response != $_COOKIE['last_sent'] && compareTimes($time, $_COOKIE['last_time']) == 1  ) {
 			echo "data: {$response}\n\n";
 			flush();
-		}
+		}	
 
-		clear_messsage($user, $friend);
+		
 	}
 
 	

@@ -1,5 +1,6 @@
 <?php
 	include('functions.php');
+  error_reporting(0);
 	session_start();
 
   if( !isset($login_correct) ) {
@@ -21,6 +22,14 @@
 		$_SESSION['#logout']++;
 	} else {
     $_SESSION['#logout'] = 1;
+  }
+
+  if( isset($_COOKIE['last_sent']) ) {
+    unset($_COOKIE['last_sent']);
+  }
+
+  if( isset($_COOKIE['last_time']) ) {
+    unset($_COOKIE['last_time']);
   }
   
 ?>
